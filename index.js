@@ -2,11 +2,13 @@ var Cli = require('admiral-cli'),
 	CliCommand = require('admiral-cli').Command,
 	CliInvalidInputError = require('admiral-cli').InvalidInputError,
 	CliConfigError = require('admiral-cli').ConfigError,
+	ConfigError = require('./lib/error/ConfigError'),
 	debug = require('debug')('main'),
 	fs = require('fs-extra'),
 	glob = require('glob'),
 	InvalidInputError = require('./lib/error/InvalidInputError'),
-	path = require('path');
+	path = require('path'),
+	whenPipeline = require('when/pipeline');
 
 /*
  * Run Example:
@@ -46,14 +48,29 @@ console.log(cli.params);
 //Cut below here
 var ElasticBeanstalk = require('./lib/ElasticBeanstalk');
 
-var eb = new ElasticBeanstalk();
+var config = getConfig(cli.params.configDir, cli.params.application, cli.params.environment);
+
+if(config.resources && config.resources.length) {
+	var awsServices = config.resources.map(function(resourceConfig) {
+		var service = AwsServiceFactory.getAwsService(resourceConfig);
+		return service.deploy;
+	});
+	whenPipeline(awsServices)
+		.then(function(results) {
+			//done?
+		});
+}
+else {
+	throw new ConfigError('resources', 'Must be an array with at least one resource to deploy');
+}
+
+var eb = new ElasticBeanstalk(config.region);
 eb.validateApplicationName(cli.params.application)
 	.then(function (result) {
 		//Checked application was valid
 		debug('Application by the name: ' + cli.params.application + ' was found');
 	})
 	.then(function () {
-		var config = getConfig(cli.params.configDir, cli.params.application, cli.params.environment);
 		console.log(config);
 	})
 	.catch(function (err) {
