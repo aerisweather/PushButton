@@ -1,7 +1,12 @@
 var Cli = require('admiral-cli'),
 	CliCommand = require('admiral-cli').Command,
 	CliInvalidInputError = require('admiral-cli').InvalidInputError,
-	CliConfigError = require('admiral-cli').ConfigError;
+	CliConfigError = require('admiral-cli').ConfigError,
+	debug = require('debug')('main'),
+	fs = require('fs-extra'),
+	glob = require('glob'),
+	InvalidInputError = require('./lib/error/InvalidInputError'),
+	path = require('path');
 
 /*
  * Run Example:
@@ -17,7 +22,8 @@ cli
 	])
 	.option('application', 'Which application we should deploy', '-a', '--application', 'string', 1)
 	.option('environment', 'Which environment config to use when deploying', '-e', '--environment', 'string', 1)
-	.option('resource', 'The specific resource to deploy', '-r', '--resource', 'string');
+	.option('resource', 'The specific resource to deploy', '-r', '--resource', 'string')
+	.option('configDir', 'A path to the JSON formatted config, may be a directory.', '-c', '--config-dir', 'string', 1);
 
 //Parse Cli arguments 
 try {
@@ -42,16 +48,51 @@ var ElasticBeanstalk = require('./lib/ElasticBeanstalk');
 
 var eb = new ElasticBeanstalk();
 eb.validateApplicationName(cli.params.application)
-.then(function(result) {
-		if(result) {
-			console.log('Application was found');
+	.then(function (result) {
+		//Checked application was valid
+		debug('Application by the name: ' + cli.params.application + ' was found');
+	})
+	.then(function () {
+		var config = getConfig(cli.params.configDir, cli.params.application, cli.params.environment);
+		console.log(config);
+	})
+	.catch(function (err) {
+		console.error(err.stack);
+	});
+
+function getConfig(configDir, applicationName, environment) {
+	var configPath = path.resolve(configDir);
+
+	if(fs.lstatSync(configPath).isDirectory()) {
+		//Search directory for json files
+		var paths = glob.sync(path.join(configPath, '*.json'));
+		//Parse configs
+		var configs = paths.map(function(configPath) {
+			debug('- Testing config: ' + configPath);
+			return fs.readJsonSync(configPath);
+		});
+		//Check configs against our requested config, select a config that matches this application and environment.
+		var foundConfigs = configs.filter(function(singleConfig) {
+			return (singleConfig.application === applicationName && singleConfig.environment === environment);
+		});
+
+		if(foundConfigs.length === 1) {
+			return foundConfigs[0];
 		}
 		else {
-			console.log('Application NOT FOUND');
+			throw new InvalidInputError('config-dir', "Could not find a config that matched application: " + applicationName + ", environment: " + environment);
 		}
-	})
-	.catch(function(err) {
-			console.error(err.message);
-			console.error(err.stack);
-	});
+	}
+	else {
+		//It is a single file or doesn't exist.
+		debug('Checking for single config file.');
+		try {
+			return fs.readJsonSync(configPath);
+		}
+		catch(err) {
+			throw new InvalidInputError('config-dir', "The config-dir can be a path to a json file or a directory, could not resolve: " + configPath + " to a valid JSON file");
+		}
+	}
+}
+
 
