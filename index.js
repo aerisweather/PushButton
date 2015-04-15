@@ -36,3 +36,22 @@ catch (error) {
 
 console.log(cli.params);
 
+
+//Cut below here
+var ElasticBeanstalk = require('./lib/ElasticBeanstalk');
+
+var eb = new ElasticBeanstalk();
+eb.validateApplicationName(cli.params.application)
+.then(function(result) {
+		if(result) {
+			console.log('Application was found');
+		}
+		else {
+			console.log('Application NOT FOUND');
+		}
+	})
+	.catch(function(err) {
+			console.error(err.message);
+			console.error(err.stack);
+	});
+
