@@ -1,0 +1,100 @@
+{
+	"scaling": {
+		"environmentType": "aws:elasticbeanstalk:environment.EnvironmentType",
+		"availabilityZones": "aws:autoscaling:asg.Availability Zones",
+		"cooldown": "aws:autoscaling:asg.Cooldown",
+		"customAvailabilityZones": "aws:autoscaling:asg.Custom Availability Zones",
+		"size": {
+			"min": "aws:autoscaling:asg.MinSize",
+			"max": "aws:autoscaling:asg.MaxSize"
+		},
+		"trigger": {
+			"metric": "aws:autoscaling:trigger.MeasureName",
+			"statistic": "aws:autoscaling:trigger.Statistic",
+			"unit": "aws:autoscaling:trigger.Unit",
+			"period": "aws:autoscaling:trigger.Period",
+			"breachDuration" : "aws:autoscaling:trigger.BreachDuration",
+			"upperThreshold": "aws:autoscaling:trigger.UpperThreshold",
+			"lowerThreshold": "aws:autoscaling:trigger.LowerThreshold",
+			"increments" : {
+				"up": "aws:autoscaling:trigger.UpperBreachScaleIncrement",
+				"down": "aws:autoscaling:trigger.LowerBreachScaleIncrement"
+			}
+		}
+	},
+	"instances": {
+		"keyName": "aws:autoscaling:launchconfiguration.EC2KeyName",
+		"iamInstanceProfile": "aws:autoscaling:launchconfiguration.IamInstanceProfile",
+		"imageId": "aws:autoscaling:launchconfiguration.ImageId",
+		"instanceType": "aws:autoscaling:launchconfiguration.InstanceType",
+		"monitoringInterval": "aws:autoscaling:launchconfiguration.MonitoringInterval",
+		"securityGroups": "aws:autoscaling:launchconfiguration.SecurityGroups",
+		"blockDeviceMappings": "aws:autoscaling:launchconfiguration.BlockDeviceMappings",
+		"rootVolume": {
+			"type":"aws:autoscaling:launchconfiguration.RootVolumeType",
+			"size": "aws:autoscaling:launchconfiguration.RootVolumeSize",
+			"iops": "aws:autoscaling:launchconfiguration.RootVolumeIOPS"
+		}
+	},
+	"notifications": {
+		"protocol": "aws:elasticbeanstalk:sns:topics.Notification Protocol",
+		"endpoint": "aws:elasticbeanstalk:sns:topics.Notification Endpoint",
+		"topicArn": "aws:elasticbeanstalk:sns:topics.Notification Topic ARN",
+		"topicName": "aws:elasticbeanstalk:sns:topics.Notification Topic Name"
+	},
+	"updates": {
+		"rollingUpdateEnabled": "aws:autoscaling:updatepolicy:rollingupdate.RollingUpdateEnabled",
+		"maxBatchSize": "aws:autoscaling:updatepolicy:rollingupdate.MaxBatchSize",
+		"minInstancesInService": "aws:autoscaling:updatepolicy:rollingupdate.MinInstancesInService",
+		"pauseTime": "aws:autoscaling:updatepolicy:rollingupdate.PauseTime"
+	},
+	"sqsWorker" : {
+		"queueUrl" : "aws:elasticbeanstalk:sqsd.WorkerQueueURL",
+		"httpPostPath": "aws:elasticbeanstalk:sqsd.HttpPath",
+		"mimeType": "aws:elasticbeanstalk:sqsd.MimeType",
+		"httpConnections": "aws:elasticbeanstalk:sqsd.HttpConnections",
+		"timeouts": {
+			"connect": "aws:elasticbeanstalk:sqsd.ConnectTimeout",
+			"inactivity": "aws:elasticbeanstalk:sqsd.InactivityTimeout",
+			"visibility": "aws:elasticbeanstalk:sqsd.VisibilityTimeout",
+			"error": "aws:elasticbeanstalk:sqsd.ErrorVisibilityTimeout"
+		},
+		"retentionPeriod": "aws:elasticbeanstalk:sqsd.RetentionPeriod",
+		"maxRetries": "aws:elasticbeanstalk:sqsd.MaxRetries"
+	},
+	"loadBalancing": {
+		"port": "aws:elb:loadbalancer.LoadBalancerHTTPPort",
+		"portProtocol": "aws:elb:loadbalancer.LoadBalancerPortProtocol",
+		"securePort": "aws:elb:loadbalancer.LoadBalancerHTTPSPort",
+		"securePortProtocol": "aws:elb:loadbalancer.LoadBalancerSSLPortProtocol",
+		"sslCert": "aws:elb:loadbalancer.SSLCertificateId",
+		"crossZone": "aws:elb:loadbalancer.CrossZone",
+		"advanced": {
+			"connectionDraining": {
+				"enabled":"aws:elb:policies.ConnectionDrainingEnabled",
+				"timeout":"aws:elb:policies.ConnectionDrainingTimeout"
+			},
+			"cookieStickiness": {
+				"enabled":"aws:elb:policies.Stickiness Policy",
+				"expiration": "aws:elb:policies.Stickiness Cookie Expiration"
+			}
+		}
+	},
+	"phpContainer": {
+		"document_root": "aws:elasticbeanstalk:container:php:phpini.document_root",
+		"memory_limit": "aws:elasticbeanstalk:container:php:phpini.memory_limit",
+		"allow_url_fopen": "aws:elasticbeanstalk:container:php:phpini.allow_url_fopen",
+		"display_errors": "aws:elasticbeanstalk:container:php:phpini.display_errors",
+		"max_execution_options": "aws:elasticbeanstalk:container:php:phpini.max_execution_time",
+		"composer_options": "aws:elasticbeanstalk:container:php:phpini.composer_options"
+	},
+	"nodeJsContainer": {
+		"startCommand": "aws:elasticbeanstalk:container:nodejs.NodeCommand",
+		"nodeVersion": "aws:elasticbeanstalk:container:nodejs.NodeVersion",
+		"proxy": {
+			"type": "aws:elasticbeanstalk:container:nodejs.ProxyServer",
+			"gzipCompression":"aws:elasticbeanstalk:container:nodejs.GzipCompression",
+			"staticRoot": "aws:elasticbeanstalk:container:nodejs:staticfiles.StaticRoot"
+		}
+	}
+}

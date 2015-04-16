@@ -1,0 +1,12 @@
+{
+	"WebServer": {
+		"Name": "WebServer",
+		"Type": "Standard",
+		"Version": "1.0"
+	},
+	"Worker" : {
+		"Name": "Worker",
+		"Type": "SQS/HTTP",
+		"Version": "1.0"
+	}
+}
