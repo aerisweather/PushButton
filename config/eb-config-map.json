@@ -81,13 +81,20 @@
 		}
 	},
 	"phpContainer": {
-		"document_root": "",
-		"memory_limit": "",
-		"allow_url_fopen": "",
-		"display_errors": ""
+		"document_root": "aws:elasticbeanstalk:container:php:phpini.document_root",
+		"memory_limit": "aws:elasticbeanstalk:container:php:phpini.memory_limit",
+		"allow_url_fopen": "aws:elasticbeanstalk:container:php:phpini.allow_url_fopen",
+		"display_errors": "aws:elasticbeanstalk:container:php:phpini.display_errors",
+		"max_execution_options": "aws:elasticbeanstalk:container:php:phpini.max_execution_time",
+		"composer_options": "aws:elasticbeanstalk:container:php:phpini.composer_options"
 	},
 	"nodeJsContainer": {
-
+		"startCommand": "aws:elasticbeanstalk:container:nodejs.NodeCommand",
+		"nodeVersion": "aws:elasticbeanstalk:container:nodejs.NodeVersion",
+		"proxy": {
+			"type": "aws:elasticbeanstalk:container:nodejs.ProxyServer",
+			"gzipCompression":"aws:elasticbeanstalk:container:nodejs.GzipCompression",
+			"staticRoot": "aws:elasticbeanstalk:container:nodejs:staticfiles.StaticRoot"
+		}
 	}
-
 }
