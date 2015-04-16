@@ -46,7 +46,7 @@ console.log(cli.params);
 
 
 //Cut below here
-var ElasticBeanstalk = require('./lib/ElasticBeanstalk');
+var ElasticBeanstalk = require('./lib/eb/ElasticBeanstalk');
 
 var config = getConfig(cli.params.configDir, cli.params.application, cli.params.environment);
 
