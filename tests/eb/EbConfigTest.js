@@ -90,6 +90,24 @@ describe("EbConfigTest", function () {
 				"Value":      '/var/www/public'
 			}));
 		});
+
+		it("should error when a bad key is given", function() {
+			var optionsConfigMap = getEbConfigMapReal();
+			var config = {
+				scaling:      {
+					trigger:  {
+						metric: 'CPUUtilization'
+					},
+					madeUp: 'n/a'
+				},
+				phpContainer: {
+					document_root: '/var/www/public'
+				}
+			};
+			assert.throws(function () {
+				EbConfig.getOptionsConfigMap(config, optionsConfigMap);
+			}, ConfigError, "Didn't throw error when a bad key was given");
+		});
 	});
 
 	describe("getLatestSolutionStack", function () {
