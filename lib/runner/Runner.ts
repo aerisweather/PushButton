@@ -2,6 +2,7 @@
 import when = require('when');
 import RunnerConfigInterface = require('./config/RunnerConfigInterface');
 import RunnerOptions = require('./options/RunnerOptionsInterface');
+import ResultInterface = require('../resource/result/ResultInterface');
 
 class Runner {
   config:RunnerConfigInterface;
@@ -10,7 +11,7 @@ class Runner {
     this.config = config;
   }
 
-  public deploy():when.Promise<any> {
+  public deploy():when.Promise<ResultInterface> {
     return when({});
   }
 }

@@ -1,5 +1,7 @@
+import ResourceConfigInterface = require('../../resource/config/ResourceConfigInterface');
+
 interface RunnerConfigInterface {
-  params?:any[];
-  resources:any[];
+  params?:any;
+  resources:ResourceConfigInterface[];
 }
 export = RunnerConfigInterface;
