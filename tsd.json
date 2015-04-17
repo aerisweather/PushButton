@@ -1,0 +1,18 @@
+{
+  "version": "v4",
+  "repo": "borisyankov/DefinitelyTyped",
+  "ref": "master",
+  "path": "typings/definitely-typed",
+  "bundle": "typings/definitely-typed/tsd.d.ts",
+  "installed": {
+    "when/when.d.ts": {
+      "commit": "52fa2b9ce36f2c5843204e9bfbaada7cded9b47a"
+    },
+    "lodash/lodash.d.ts": {
+      "commit": "52fa2b9ce36f2c5843204e9bfbaada7cded9b47a"
+    },
+    "sinon/sinon.d.ts": {
+      "commit": "52fa2b9ce36f2c5843204e9bfbaada7cded9b47a"
+    }
+  }
+}
