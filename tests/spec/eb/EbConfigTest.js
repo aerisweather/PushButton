@@ -1,7 +1,7 @@
 var _ = require('lodash'),
 	assert = require('assert'),
-	ConfigError = require('../../lib/error/ConfigError'),
-	EbConfig = require('../../lib/eb/EbConfig'),
+	ConfigError = require('../../../lib/error/ConfigError'),
+	EbConfig = require('../../../lib/eb/EbConfig'),
 	fs = require('fs-extra'),
 	path = require('path');
 
