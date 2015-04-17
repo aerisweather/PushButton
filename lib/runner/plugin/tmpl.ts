@@ -1,14 +1,14 @@
-var sequence = require('when/sequence');
+///<reference path="../../../typings/vendor.d.ts" />
 var handlebars = require('handlebars');
 
-module.exports = function(options) {
+var plugin = function(options) {
   return {
     resolvers: {
       tmpl: function(resolver, templateString, refObj, wire) {
         var template = handlebars.compile(templateString);
 
         // get the entire wire context
-        wire({}).
+        wire.createChild({}).
           // render the template with the context
           then(template).
           // resolve with the rendered template
@@ -18,3 +18,5 @@ module.exports = function(options) {
     }
   }
 };
+
+export = plugin;
