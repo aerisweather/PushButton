@@ -40,7 +40,7 @@ describe("EbConfigTest", function () {
 		});
 	});
 
-	describe("getOptionsConfigMap", function () {
+	describe("getOptionsConfigMapped", function () {
 		it("should map a single property", function () {
 			var optionsConfigMap = getEbConfigMapReal();
 			var config = {
@@ -50,7 +50,7 @@ describe("EbConfigTest", function () {
 					}
 				}
 			};
-			var options = EbConfig.getOptionsConfigMap(config, optionsConfigMap);
+			var options = EbConfig.getOptionsConfigMapped(config, optionsConfigMap);
 			assert.equal(options.length, 1);
 			assert.ok(_.isEqual(options[0], {
 				"Namespace":  "aws:autoscaling:asg",
@@ -72,7 +72,7 @@ describe("EbConfigTest", function () {
 					document_root: '/var/www/public'
 				}
 			};
-			var options = EbConfig.getOptionsConfigMap(config, optionsConfigMap);
+			var options = EbConfig.getOptionsConfigMapped(config, optionsConfigMap);
 			assert.equal(options.length, 3);
 			assert.ok(_.isEqual(options[0], {
 				"Namespace":  "aws:autoscaling:asg",
@@ -105,7 +105,7 @@ describe("EbConfigTest", function () {
 				}
 			};
 			assert.throws(function () {
-				EbConfig.getOptionsConfigMap(config, optionsConfigMap);
+				EbConfig.getOptionsConfigMapped(config, optionsConfigMap);
 			}, ConfigError, "Didn't throw error when a bad key was given");
 		});
 	});
