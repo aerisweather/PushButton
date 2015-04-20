@@ -2,21 +2,25 @@
 import wire = require('wire');
 import when = require('when');
 import _ = require('lodash');
-import ResourceConfigInterface = require('../resource/config/ResourceConfigInterface');
-import RunnerConfigInterface = require('./config/RunnerConfigInterface');
-import ResourceInterface = require('../resource/ResourceInterface');
-import RunnerContextInterface = require('./context/RunnerContextInterface');
+import ResourceConfig = require('../resource/config/ResourceConfigInterface');
+import ResourceCollectionConfig = require('../resource/config/ResourceCollectionConfigInterface');
+import Resource = require('../resource/ResourceInterface');
+import RunnerContext = require('context/RunnerContextInterface');
+import tmplPlugin = require('./plugin/tmpl');
 
 class ConfigManager {
   protected resourceMap = {};
   protected plugins = [];
-  protected context:RunnerContextInterface;
+  protected context:RunnerContext;
 
   public setResourceMap(serviceMap) {
     this.resourceMap = serviceMap;
+    this.plugins = [
+      tmplPlugin
+    ];
   }
 
-  public wireResource(resourceConfig:ResourceConfigInterface):When.Promise<ResourceInterface> {
+  public wireResource(resourceConfig:ResourceConfig):When.Promise<Resource> {
     // Convert the resource config into a Wire.js `create` factory.
     // We assign it a unique key, so we can pluck it out later.
     var RESOURCE_KEY = _.uniqueId('RESOURCE_');
@@ -41,13 +45,10 @@ class ConfigManager {
       });
   }
 
-  public addResource(name:string, resource:ResourceInterface):When.Promise<ResourceInterface> {
+  public addResource(name:string, resource:Resource):When.Promise<Resource> {
     return this.getContext().
       then((context) => {
         return context.resources[name] = resource
-      }).
-      tap((resource) => {
-        var ctx = this.context;
       });
   }
 
@@ -65,7 +66,7 @@ class ConfigManager {
       });
   }
 
-  public getContext():When.Promise<RunnerContextInterface> {
+  public getContext():When.Promise<RunnerContext> {
     // Return the context, or wire up a new one.
     return this.context ?
       when(this.context) :
@@ -73,15 +74,15 @@ class ConfigManager {
         then((context) => this.context = context);
   }
 
-  protected createContext():When.Promise<RunnerContextInterface> {
-    var spec:RunnerConfigInterface = {
+  protected createContext():When.Promise<RunnerContext> {
+    var spec:ResourceCollectionConfig = {
       params: {},
       resources: []
     };
-    return wire<RunnerConfigInterface, RunnerContextInterface>(spec);
+    return wire<ResourceCollectionConfig, RunnerContext>(spec);
   }
 
-  protected toFactorySpec(resourceConfig:ResourceConfigInterface):Wire.Factories.create {
+  protected toFactorySpec(resourceConfig:ResourceConfig):Wire.Factories.create {
     return {
       create: {
         module: this.resourceMap[resourceConfig.type],

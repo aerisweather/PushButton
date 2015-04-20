@@ -1,10 +1,10 @@
-///<reference path="../../typings/vendor.d.ts" />
-import ConfigManager = require('../../lib/runner/ConfigManager');
+///<reference path="../../../typings/vendor.d.ts" />
+import ConfigManager = require('../../../lib/config-manager/ConfigManager');
 import sinon = require('sinon');
 import _ = require('lodash');
-import ResourceInterface = require('../../lib/resource/ResourceInterface');
+import ResourceInterface = require('../../../lib/resource/ResourceInterface');
 import assert = require('assert');
-import tmpl = require('../../lib/runner/plugin/tmpl');
+import tmpl = require('../../../lib/config-manager/plugin/tmpl');
 
 class ResourceMock {
   public deploy:SinonSpy;
