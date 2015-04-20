@@ -6,8 +6,6 @@ import EbResult = require('./EbResult');
 import ResourceInterface = require('../../ResourceInterface');
 import when = require('when');
 
-require('when/es6-shim/Promise');
-
 class ElasticBeanstalk implements ResourceInterface {
 
     config:any;
