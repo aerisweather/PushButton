@@ -14,11 +14,11 @@ class FileProvider implements FileProviderInterface {
   }
 
   public deploy():When.Promise<FileProviderResult> {
-    return when(() => {
-      return {
+    return when.promise<FileProviderResult>((resolve, reject) => {
+      resolve({
         message: 'Created stream for file at ' + this.config.path,
         fileStream: fs.createReadStream(this.config.path)
-      };
+      });
     });
   }
 
