@@ -6,21 +6,20 @@ import ResultInterface = require('../resource/result/ResultInterface');
 import ResourceCollectionResult = require('../resource/result/ResourceCollectionResultInterface');
 import ResourceInterface = require('../resource/ResourceInterface');
 import ResourceConfigInterface = require('../resource/config/ResourceConfigInterface');
-import resourceMap = require('../../config/resource-map');
+import defaultResourceMap = require('../../config/resource-map');
 import ConfigManager = require('../config-manager/ConfigManager');
 
 
 class ResourceCollection implements ResourceInterface {
   protected config:RunnerConfigInterface;
-  /** Maps named resource services to Resource constructors. */
-  protected resourceMap:Dictionary<any>;
 
   protected configManager:ConfigManager;
 
   constructor(config:RunnerConfigInterface) {
     this.config = config;
+
     this.configManager = new ConfigManager();
-    this.resourceMap = resourceMap;
+    this.configManager.setResourceMap(defaultResourceMap);
   }
 
   public deploy():when.Promise<ResourceCollectionResult> {
@@ -36,7 +35,8 @@ class ResourceCollection implements ResourceInterface {
   }
 
   protected deployAllResources():When.Promise<ResultInterface[]> {
-    // A set of PromiseFns, to deploy each resource
+    // A set of PromiseFns,
+    // each fn deploys a resource.
     var resourceDeployers = this.config.resources.
       map((resourceConfig:ResourceConfigInterface) =>
         () => this.deployResourceConfig(resourceConfig));
@@ -53,7 +53,7 @@ class ResourceCollection implements ResourceInterface {
 
   /** Maps named resource services to Resource constructors. */
   public setResourceMap(resourceMap:Dictionary<any>) {
-    this.resourceMap = resourceMap;
+    this.configManager.setResourceMap(resourceMap);
   }
 
   public setConfigManager(configManager:ConfigManager) {

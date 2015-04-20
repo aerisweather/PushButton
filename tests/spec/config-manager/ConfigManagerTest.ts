@@ -5,23 +5,7 @@ import _ = require('lodash');
 import ResourceInterface = require('../../../lib/resource/ResourceInterface');
 import assert = require('assert');
 import tmpl = require('../../../lib/config-manager/plugin/tmpl');
-
-class ResourceMock {
-  public deploy:SinonSpy;
-  public config:any;
-
-  public constructor(config?:any) {
-    this.deploy = sinon.spy();
-    this.config = config;
-  }
-
-  public getCtorMock() {
-    return (config) => {
-      this.constructor(config);
-      return this;
-    }
-  }
-}
+import ResourceMock = require('../../mock/ResourceMock');
 
 describe('ConfigManager', () => {
 
