@@ -17,9 +17,8 @@ class EbConfig {
     tierConfig:any;
     optionsConfigMap:any;
 
-    construct(eb:AWS.ElasticBeanstalk, config:any, tierConfig:any, optionsConfigMap:any) {
+    construct(eb:AWS.ElasticBeanstalk, tierConfig:any, optionsConfigMap:any) {
         this.eb = eb;
-        this.config = config;
 
         if (tierConfig === undefined) {
             debug('No tierConfig supplied, loading from config dir.');
@@ -34,6 +33,12 @@ class EbConfig {
         this.optionsConfigMap = optionsConfigMap;
     }
 
+    /**
+     *
+     * @param os
+     * @param solutionStackShortName
+     * @returns {Promise<string>}
+     */
     public getLatestSolutionStack(os, solutionStackShortName):when.Promise<string> {
         return when.promise<string>(function (resolve, reject) {
             this.eb.listAvailableSolutionStacks(function (err, stackResult) {
@@ -56,34 +61,39 @@ class EbConfig {
     /**
      * Get EbCreate Config
      *
-     * Gets a config
+     * Gets a config ready for AWS ElasticBeanstalk createEnvironment.
      */
-    public getEbCreateConfig() {
-        return this.getLatestSolutionStack(this.config.solutionStack.os, this.config.solutionStack.stack)
+    public getEbCreateConfig(config:any) {
+        return this.getLatestSolutionStack(config.solutionStack.os, config.solutionStack.stack)
             .then(function (solutionStackName) {
-
                 var optionsSettings = [];
-                var mappedOptions = EbConfig.getOptionsConfigMapped(this.config.options, this.optionsConfigMap);
-                var rawOptions = this.config.rawOptions;
-                optionsSettings = optionsSettings.concat(mappedOptions, rawOptions);
+                var mappedOptions = [];
+                var rawOptions = [];
+                var envVars = [];
+
+                if (config.options) {
+                    mappedOptions = EbConfig.getOptionsConfigMapped(config.options, this.optionsConfigMap);
+                }
+                if (config.rawOptions) {
+                    rawOptions = EbConfig.getRawOptionsMapped(config.rawOptions);
+                }
+                if (config.environmentVars) {
+                    envVars = EbConfig.getEnvironmentVarsMapped(config.environmentVars);
+                }
+                optionsSettings = optionsSettings.concat(mappedOptions, rawOptions, envVars);
+
 
                 return {
-                    "ApplicationName": this.config.applicationName,
-                    "EnvironmentName": this.config.environmentName,
-                    "Description": this.config.description,
-                    "CNAMEPrefix": this.config.cnamePrefix,
-                    "Tier": this.getTier(this.config.tier, this.tierConfig),
-                    "Tags": this.config.tags,
-                    "VersionLabel": this.config.versionLabel || "{{version}}",
-                    "TemplateName": this.config.templateName || null,
+                    "ApplicationName": config.applicationName,
+                    "EnvironmentName": config.environmentName,
+                    "Description": config.description,
+                    "CNAMEPrefix": config.cnamePrefix,
+                    "Tier": this.getTier(config.tier, this.tierConfig),
+                    "Tags": config.tags,
+                    "VersionLabel": config.versionLabel || "{{version}}",
+                    "TemplateName": config.templateName || null,
                     "SolutionStackName": solutionStackName,
-                    "OptionSettings": [
-                        {
-                            "Namespace": "my:option:software",
-                            "OptionName": "SQS_URL",
-                            "Value": "{{sqs-queue-alert.queueUrl}}"
-                        }
-                    ]
+                    "OptionSettings": optionsSettings
                 }
             }.bind(this));
     }
@@ -132,10 +142,33 @@ class EbConfig {
         var results = [];
         for (var optionName in rawOptions) {
             if (rawOptions.hasOwnProperty(optionName)) {
+                var keyParts = optionName.split('.');
+                var namespace = keyParts[0];
+                var optionName = keyParts[1];
+                var value = rawOptions[optionName];
+                results.push({
+                    Namespace: namespace,
+                    OptionName: optionName,
+                    Value: value
+                });
+            }
+        }
+        return results;
+    }
+
+    /**
+     * Get Environment Variable Options, Mapped
+     *
+     * Maps Environment Options to the Elastic Beanstalk friendly EbOptions array
+     */
+    public static getEnvironmentVarsMapped(envVarOptions:Dictionary<any>):Array<EbOption> {
+        var results = [];
+        for (var optionName in envVarOptions) {
+            if (envVarOptions.hasOwnProperty(optionName)) {
                 results.push({
                     Namespace: 'aws:elasticbeanstalk:application:environment',
                     OptionName: optionName,
-                    Value: rawOptions[optionName]
+                    Value: envVarOptions[optionName]
                 });
             }
         }
