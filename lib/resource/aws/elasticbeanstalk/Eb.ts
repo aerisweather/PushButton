@@ -6,6 +6,9 @@ import EbResult = require('./EbResult');
 import ResourceInterface = require('../../ResourceInterface');
 import when = require('when');
 
+/**
+ * A single deployable elastic beanstalk environment.
+ */
 class ElasticBeanstalk implements ResourceInterface {
 
     config:any;
