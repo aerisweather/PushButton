@@ -2,25 +2,44 @@
 
 import AWS = require('aws-sdk');
 import InvalidInputError = require('../../../error/InvalidInputError');
+import EbConfig = require('./EbConfig');
 import EbResult = require('./EbResult');
 import ResourceInterface = require('../../ResourceInterface');
 import when = require('when');
+import whenNodeLift = require('when/node');
+
+
 
 /**
  * A single deployable elastic beanstalk environment.
  */
 class ElasticBeanstalk implements ResourceInterface {
 
-    config:any;
+    resourceConfig:any;
     eb:AWS.ElasticBeanstalk;
 
     constructor(resourceConfig) {
-        this.config = resourceConfig;
-        this.eb = new AWS.ElasticBeanstalk({region: this.config.region});
+        this.resourceConfig = resourceConfig;
+        this.eb = new AWS.ElasticBeanstalk({region: this.resourceConfig.region});
     }
 
-    public deploy():EbResult {
-        return new EbResult();
+    public deploy():when.Promise<EbResult> {
+
+        var ebConfig = new EbConfig(this.eb);
+
+        var parsedCreateConfig;
+        return ebConfig.getEbCreateConfig(this.resourceConfig.config)
+            .tap(function (createConfig) {
+                //Application code already exists on S3, we have a reference to that S3 bucket
+
+                //Create appVersion
+
+            }.bind(this))
+            .then(function (createConfig) {
+                return this.eb.createEnvironment(createConfig);
+            });
+
+
     }
 
     public validateApplicationName(applicationName:string):when.Promise<boolean> {

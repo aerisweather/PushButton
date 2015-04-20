@@ -1,8 +1,9 @@
 declare module AWS {
     class ElasticBeanstalk {
         constructor(...params:any[]);
-        createApplication(...params:any[]):any;
-        describeApplications(options:any, callback:{(err:string, data:any[])}):void;
+        public createApplication(...params:any[]):any;
+        public createApplicationVersion(...params:any[]):any;
+        public describeApplications(options:any, callback:{(err:string, data:any[])}):void;
     }
 }
 
