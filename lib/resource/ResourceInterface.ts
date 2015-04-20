@@ -2,6 +2,6 @@
 import ResultInterface = require('./result/ResultInterface');
 
 interface ResourceInterface {
-  deploy():ResultInterface;
+  deploy():When.Promise<ResultInterface>;
 }
 export = ResourceInterface;

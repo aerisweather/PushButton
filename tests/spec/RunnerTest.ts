@@ -1,7 +1,7 @@
 ///<reference path="../../typings/vendor.d.ts" />
 import sinon = require('sinon');
 import _ = require('lodash');
-import Runner= require('../../lib/runner/Runner');
+import Runner = require('../../lib/resource/ResourceCollection');
 import ResourceInterface = require('../../lib/resource/ResourceInterface');
 import ResultInterface = require('../../lib/resource/result/ResultInterface');
 import assert = require('assert');
@@ -14,7 +14,7 @@ describe('Runner', () => {
       var fooService:SinonMock, barService:SinonMock, serviceMap:any;
 
       beforeEach(() => {
-        var resourceServiceStub:ResourceInterface = { deploy: () => <ResultInterface>{} };
+        var resourceServiceStub:ResourceInterface = { deploy: () => <When.Promise<ResultInterface>>{} };
 
         fooService = sinon.mock(resourceServiceStub);
         barService = sinon.mock(resourceServiceStub);
