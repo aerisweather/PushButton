@@ -1,5 +1,4 @@
 ///<reference path="../definitely-typed/node/node.d.ts" />
-import fs = require('fs');
 declare module AWS {
   interface Callback<TData> {
     (err:Error, data:TData):void;
@@ -26,7 +25,7 @@ declare module AWS {
       interface putObject {
         Bucket: string;
         Key: string;
-        Body: fs.ReadStream;
+        Body: ReadStream;
       }
     }
 
