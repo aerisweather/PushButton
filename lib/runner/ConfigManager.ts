@@ -8,12 +8,12 @@ import ResourceInterface = require('../resource/ResourceInterface');
 import RunnerContextInterface = require('./context/RunnerContextInterface');
 
 class ConfigManager {
-  protected serviceMap = {};
+  protected resourceMap = {};
   protected plugins = [];
   protected context:RunnerContextInterface;
 
-  public setServiceMap(serviceMap) {
-    this.serviceMap = serviceMap;
+  public setResourceMap(serviceMap) {
+    this.resourceMap = serviceMap;
   }
 
   public wireResource(resourceConfig:ResourceConfigInterface):When.Promise<ResourceInterface> {
@@ -84,7 +84,7 @@ class ConfigManager {
   protected toFactorySpec(resourceConfig:ResourceConfigInterface):Wire.Factories.create {
     return {
       create: {
-        module: this.serviceMap[resourceConfig.type],
+        module: this.resourceMap[resourceConfig.type],
         args: [resourceConfig.config],
         isConstructor: true
       }

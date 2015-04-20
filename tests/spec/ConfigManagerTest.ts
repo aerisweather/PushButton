@@ -42,7 +42,7 @@ describe('ConfigManager', () => {
 
       it('should create a resource from a config', (done) => {
         var configManager = new ConfigManager();
-        configManager.setServiceMap(serviceMap);
+        configManager.setResourceMap(serviceMap);
 
         configManager.wireResource({
           name: 'foo-service',
@@ -58,7 +58,7 @@ describe('ConfigManager', () => {
 
       it('should create a resource which references a previous resource', (done) => {
         var configManager = new ConfigManager();
-        configManager.setServiceMap(serviceMap);
+        configManager.setResourceMap(serviceMap);
 
         configManager.wireResource({
           name: 'foo-service',
@@ -84,7 +84,7 @@ describe('ConfigManager', () => {
 
       it('should create a resource which references a param', (done) => {
         var configManager = new ConfigManager();
-        configManager.setServiceMap(serviceMap);
+        configManager.setResourceMap(serviceMap);
 
         configManager.wireParams({
           paramA: 'paramValA'
@@ -109,7 +109,7 @@ describe('ConfigManager', () => {
 
       it('should create a resource using the tmpl plugin', (done) => {
         var configManager = new ConfigManager();
-        configManager.setServiceMap(serviceMap);
+        configManager.setResourceMap(serviceMap);
 
         configManager.addPlugin(tmpl);
 
