@@ -1,12 +1,15 @@
 ///<reference path="../../typings/vendor.d.ts" />
+import sinon = require('sinon');
+import when = require('when');
 import ResourceInterface = require('../../lib/resource/ResourceInterface');
 
 class ResourceMock implements ResourceInterface {
-  public deploy:SinonSpy;
+  public deploy:SinonExpectation;
   public config:any;
 
-  public constructor(config?:any) {
-    this.deploy = sinon.spy();
+  public constructor(config = {}) {
+    this.deploy = sinon.expectation.create('deploy').
+      returns(when(config.result || {}));
     this.config = config;
   }
 

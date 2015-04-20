@@ -1,21 +1,21 @@
 /// <reference path="../../typings/vendor.d.ts" />
 import when = require('when');
 import sequence = require('when/sequence');
-import RunnerConfigInterface = require('./../resource/config/ResourceCollectionConfigInterface');
-import ResultInterface = require('../resource/result/ResultInterface');
+import ResourceCollectionConfig = require('./../resource/config/ResourceCollectionConfigInterface');
+import Result = require('../resource/result/ResultInterface');
 import ResourceCollectionResult = require('../resource/result/ResourceCollectionResultInterface');
-import ResourceInterface = require('../resource/ResourceInterface');
-import ResourceConfigInterface = require('../resource/config/ResourceConfigInterface');
+import Resource = require('../resource/ResourceInterface');
+import ResourceConfig = require('../resource/config/ResourceConfigInterface');
 import defaultResourceMap = require('../../config/resource-map');
 import ConfigManager = require('../config-manager/ConfigManager');
 
 
-class ResourceCollection implements ResourceInterface {
-  protected config:RunnerConfigInterface;
+class ResourceCollection implements Resource {
+  protected config:ResourceCollectionConfig;
 
   protected configManager:ConfigManager;
 
-  constructor(config:RunnerConfigInterface) {
+  constructor(config:ResourceCollectionConfig) {
     this.config = config;
 
     this.configManager = new ConfigManager();
@@ -24,9 +24,9 @@ class ResourceCollection implements ResourceInterface {
 
   public deploy():when.Promise<ResourceCollectionResult> {
     return this.configManager.
-      wireParams(this.config.params).
+      wireParams(this.config.params || {}).
       then(() => this.deployAllResources()).
-      then((results:ResultInterface[]) => {
+      then((results:Result[]) => {
         return {
           message: 'All resources have deployed successfully.',
           results: results
@@ -34,21 +34,21 @@ class ResourceCollection implements ResourceInterface {
       });
   }
 
-  protected deployAllResources():When.Promise<ResultInterface[]> {
+  protected deployAllResources():When.Promise<Result[]> {
     // A set of PromiseFns,
     // each fn deploys a resource.
     var resourceDeployers = this.config.resources.
-      map((resourceConfig:ResourceConfigInterface) =>
+      map((resourceConfig:ResourceConfig) =>
         () => this.deployResourceConfig(resourceConfig));
 
     // Run each resource deployer, in order.
-    return sequence<ResultInterface>(resourceDeployers);
+    return sequence<Result>(resourceDeployers);
   }
 
-  protected deployResourceConfig(resourceConfig:ResourceConfigInterface):When.Promise<ResultInterface> {
+  protected deployResourceConfig(resourceConfig:ResourceConfig):When.Promise<Result> {
     return this.configManager.
       wireResource(resourceConfig).
-      then((resource:ResourceInterface) => resource.deploy());
+      then((resource:Resource) => resource.deploy());
   }
 
   /** Maps named resource services to Resource constructors. */

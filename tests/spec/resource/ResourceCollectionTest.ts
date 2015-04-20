@@ -1,114 +1,110 @@
 ///<reference path="../../../typings/vendor.d.ts" />
 import sinon = require('sinon');
+import when = require('when');
 import _ = require('lodash');
-import Runner = require('../../../lib/resource/ResourceCollection');
+import ResourceCollection = require('../../../lib/resource/ResourceCollection');
+import ResourceCollectionResult = require('../../../lib/resource/result/ResourceCollectionResultInterface');
+import ConfigManager = require('../../../lib/config-manager/ConfigManager');
 import ResourceInterface = require('../../../lib/resource/ResourceInterface');
 import ResultInterface = require('../../../lib/resource/result/ResultInterface');
+import ResourceMock = require('../../mock/ResourceMock');
 import assert = require('assert');
 
 describe('ResourceCollection', () => {
 
-  describe('deploy', () => {
-    
-    describe('deploying resources', () => {
-      var fooService:SinonMock, barService:SinonMock, serviceMap:any;
 
-      beforeEach(() => {
-        var resourceServiceStub:ResourceInterface = { deploy: () => <When.Promise<ResultInterface>>{} };
+  describe('deploying resources', () => {
+    var fooService:ResourceMock, barService:ResourceMock, configManager;
 
-        fooService = sinon.mock(resourceServiceStub);
-        barService = sinon.mock(resourceServiceStub);
+    beforeEach(() => {
+      fooService = new ResourceMock();
+      barService = new ResourceMock();
 
-        serviceMap = {
-          Foo: _.identity(fooService),
-          Bar: _.identity(barService)
-        };
+      configManager = new ConfigManager();
+      configManager.setResourceMap({
+        Foo: fooService.getCtorMock(),
+        Bar: barService.getCtorMock()
       });
-      
-      it('should create resources with the provided config', (done) => {
-        var FooServiceCtor = Mock('FooService');
-        var BarServiceCtor = Mock('BarService');
-        FooServiceCtor.returns(fooService);
-        BarServiceCtor.returns(barService);
-
-        var runner = new Runner({
-          resources: [
-            {
-              type: 'Foo',
-              config: { foo: 'faz' }
-            },
-            {
-              type: 'Bar',
-              config: { bar: 'baz' }
-            }
-          ]
-        }, {
-          serviceMap: {
-            Foo: FooServiceCtor,
-            Bar: BarServiceCtor
-          }
-        });
-
-        FooServiceCtor.once().
-          withArgs({ foo: 'faz' });
-        BarServiceCtor.once().
-          withArgs({ bar: 'baz' });
-
-        runner.deploy().
-          done(done, done);
-
-        FooServiceCtor.verify();
-        BarServiceCtor.verify();
-      });
-      
-      it('should deploy all configured resources', (done) => {
-        var runner = new Runner({
-          resources: [
-            { type: 'Foo' },
-            { type: 'Bar' }
-          ]
-        }, { serviceMap: serviceMap });
-
-        fooService.expects('run').once();
-        barService.expects('run').once();
-
-        runner.deploy()
-          .done(done, done);
-
-        fooService.verify();
-        barService.verify();
-      });
-
-      it('should deploy resources in order', () => {
-        var onDeploy = sinon.spy();
-        var runner = new Runner({
-          resources: [
-            { type: 'Foo' },
-            { type: 'Bar' }
-          ]
-        }, { serviceMap: serviceMap });
-
-        fooService['deploy'] = function() {
-          // Check that bar service hasn't run yet
-          assert(!barService['run'].called, 'Expected fooService.run to have been called ' +
-          'before barService.run');
-
-          onDeploy();
-        };
-
-        runner.deploy();
-
-        assert(onDeploy.called, "Should have called fooService.deploy");
-      });
-
     });
 
+    it('should deploy all configured resources', (done) => {
+      var resourceCollection = new ResourceCollection({
+        resources: [
+          {
+            name: 'fooService',
+            type: 'Foo',
+            config: {}
+          },
+          {
+            name: 'barService',
+            type: 'Bar',
+            config: {}
+          }
+        ]
+      });
+      resourceCollection.setConfigManager(configManager);
 
-    
+      resourceCollection.deploy().
+        then(() => {
+          assert(fooService.deploy.called, "Should have deployed fooService");
+          assert(barService.deploy.called, "Should have deployed barService");
+        }).
+        done(() => done(), done);
+    });
+
+    it('should deploy resources in order', (done) => {
+      var resourceCollection = new ResourceCollection({
+        resources: [
+          {
+            name: 'fooService',
+            type: 'Foo',
+            config: {}
+          },
+          {
+            name: 'barService',
+            type: 'Bar',
+            config: {}
+          }
+        ]
+      });
+      resourceCollection.setConfigManager(configManager);
+
+      resourceCollection.deploy().
+        then(() => {
+          assert(fooService.deploy.calledBefore(barService.deploy), "Should have deployed fooService before barService");
+        }).
+        done(() => done(), done);
+    });
+
+    it('should return resource result objects', (done) => {
+      var resourceCollection = new ResourceCollection({
+        resources: [
+          {
+            name: 'fooService',
+            type: 'Foo',
+            config: {
+              result: { foo: 'faz' }
+            }
+          },
+          {
+            name: 'barService',
+            type: 'Bar',
+            config: {
+              result: { bar: 'baz' }
+            }
+          }
+        ]
+      });
+      resourceCollection.setConfigManager(configManager);
+
+      resourceCollection.deploy().
+        then((result:ResourceCollectionResult) => {
+          assert(result.results[0].foo === 'faz', 'Should contain foo result');
+          assert(result.results[1].bar === 'baz', 'Should contain bar result');
+        }).
+        done(() => done(), done);
+    });
+
   });
-
-  function Mock(name?:string):SinonExpectation {
-    return sinon.expectation.create(name);
-  }
 
 });
