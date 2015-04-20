@@ -53,35 +53,47 @@ class EbConfig {
         }.bind(this));
     }
 
+    /**
+     * Get EbCreate Config
+     *
+     * Gets a config
+     */
     public getEbCreateConfig() {
         return this.getLatestSolutionStack(this.config.solutionStack.os, this.config.solutionStack.stack)
             .then(function (solutionStackName) {
 
                 var optionsSettings = [];
                 var mappedOptions = EbConfig.getOptionsConfigMapped(this.config.options, this.optionsConfigMap);
+                var rawOptions = this.config.rawOptions;
+                optionsSettings = optionsSettings.concat(mappedOptions, rawOptions);
 
                 return {
-                    "ApplicationName":   this.config.applicationName,
-                    "EnvironmentName":   this.config.environmentName,
-                    "Description":       this.config.description,
-                    "CNAMEPrefix":       this.config.cnamePrefix,
-                    "Tier":              this.getTier(this.config.tier, this.tierConfig),
-                    "Tags":              this.config.tags,
-                    "VersionLabel":      this.config.versionLabel || "{{version}}",
-                    "TemplateName":      this.config.templateName || null,
+                    "ApplicationName": this.config.applicationName,
+                    "EnvironmentName": this.config.environmentName,
+                    "Description": this.config.description,
+                    "CNAMEPrefix": this.config.cnamePrefix,
+                    "Tier": this.getTier(this.config.tier, this.tierConfig),
+                    "Tags": this.config.tags,
+                    "VersionLabel": this.config.versionLabel || "{{version}}",
+                    "TemplateName": this.config.templateName || null,
                     "SolutionStackName": solutionStackName,
-                    "OptionSettings":    [
+                    "OptionSettings": [
                         {
-                            "Namespace":  "my:option:software",
+                            "Namespace": "my:option:software",
                             "OptionName": "SQS_URL",
-                            "Value":      "{{sqs-queue-alert.queueUrl}}"
+                            "Value": "{{sqs-queue-alert.queueUrl}}"
                         }
                     ]
                 }
             }.bind(this));
     }
 
-    public static getOptionsConfigMapped(optionsConfig:any, optionsConfigMap:any, results?:Array<EbOption>):Array<EbOption> {
+    /**
+     * Get Options Config, Mapped
+     *
+     * Maps options in the user friendly config way to the Elastic Beanstalk EbOptions array
+     */
+    public static getOptionsConfigMapped(optionsConfig:Dictionary<any>, optionsConfigMap:Dictionary<any>, results?:Array<EbOption>):Array<EbOption> {
         if (results === undefined) {
             results = [];
         }
@@ -97,9 +109,9 @@ class EbConfig {
                         var optionName = keyParts[1];
                         var value = optionsConfig[i];
                         results.push({
-                            Namespace:  namespace,
+                            Namespace: namespace,
                             OptionName: optionName,
-                            Value:      value
+                            Value: value
                         });
                     }
                     else {
@@ -111,7 +123,31 @@ class EbConfig {
         return results;
     }
 
-    public static getTier(tierName, tierConfig) {
+    /**
+     * Get Raw Options, Mapped
+     *
+     * Maps raw options to the Elastic Beanstalk friendly EbOptions array
+     */
+    public static getRawOptionsMapped(rawOptions:Dictionary<any>):Array<EbOption> {
+        var results = [];
+        for (var optionName in rawOptions) {
+            if (rawOptions.hasOwnProperty(optionName)) {
+                results.push({
+                    Namespace: 'aws:elasticbeanstalk:application:environment',
+                    OptionName: optionName,
+                    Value: rawOptions[optionName]
+                });
+            }
+        }
+        return results;
+    }
+
+    /**
+     * Get Tier
+     *
+     * Gets a tier config name and passed config.
+     */
+    public static getTier(tierName:string, tierConfig:any):any {
         var result = tierConfig[tierName];
         if (result === undefined) {
             throw new ConfigError('tier', tierName + " is an invalid tier and the configuration couldn't be found for that tier.");
