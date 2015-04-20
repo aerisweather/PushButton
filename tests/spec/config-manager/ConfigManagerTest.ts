@@ -1,40 +1,24 @@
-///<reference path="../../typings/vendor.d.ts" />
-import ConfigManager = require('../../lib/runner/ConfigManager');
+///<reference path="../../../typings/vendor.d.ts" />
+import ConfigManager = require('../../../lib/config-manager/ConfigManager');
 import sinon = require('sinon');
 import _ = require('lodash');
-import ResourceInterface = require('../../lib/resource/ResourceInterface');
+import ResourceInterface = require('../../../lib/resource/ResourceInterface');
 import assert = require('assert');
-import tmpl = require('../../lib/runner/plugin/tmpl');
-
-class ResourceMock {
-  public deploy:SinonSpy;
-  public config:any;
-
-  public constructor(config?:any) {
-    this.deploy = sinon.spy();
-    this.config = config;
-  }
-
-  public getCtorMock() {
-    return (config) => {
-      this.constructor(config);
-      return this;
-    }
-  }
-}
+import tmpl = require('../../../lib/config-manager/plugin/tmpl');
+import ResourceMock = require('../../mock/ResourceMock');
 
 describe('ConfigManager', () => {
 
   describe('wire', () => {
 
     describe('wireResource', () => {
-      var fooService:ResourceMock, barService:ResourceMock, serviceMap:any;
+      var fooService:ResourceMock, barService:ResourceMock, resourceMap:any;
 
       beforeEach(() => {
         fooService = new ResourceMock();
         barService = new ResourceMock();
 
-        serviceMap = {
+        resourceMap = {
           Foo: fooService.getCtorMock(),
           Bar: barService.getCtorMock()
         };
@@ -42,7 +26,7 @@ describe('ConfigManager', () => {
 
       it('should create a resource from a config', (done) => {
         var configManager = new ConfigManager();
-        configManager.setServiceMap(serviceMap);
+        configManager.setResourceMap(resourceMap);
 
         configManager.wireResource({
           name: 'foo-service',
@@ -58,7 +42,7 @@ describe('ConfigManager', () => {
 
       it('should create a resource which references a previous resource', (done) => {
         var configManager = new ConfigManager();
-        configManager.setServiceMap(serviceMap);
+        configManager.setResourceMap(resourceMap);
 
         configManager.wireResource({
           name: 'foo-service',
@@ -84,7 +68,7 @@ describe('ConfigManager', () => {
 
       it('should create a resource which references a param', (done) => {
         var configManager = new ConfigManager();
-        configManager.setServiceMap(serviceMap);
+        configManager.setResourceMap(resourceMap);
 
         configManager.wireParams({
           paramA: 'paramValA'
@@ -109,7 +93,7 @@ describe('ConfigManager', () => {
 
       it('should create a resource using the tmpl plugin', (done) => {
         var configManager = new ConfigManager();
-        configManager.setServiceMap(serviceMap);
+        configManager.setResourceMap(resourceMap);
 
         configManager.addPlugin(tmpl);
 

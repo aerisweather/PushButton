@@ -1,7 +1,7 @@
 ///<reference path="../../../typings/vendor.d.ts" />
 var handlebars = require('handlebars');
 
-var plugin = function(options) {
+var plugin:Wire.PluginFactory = function(options) {
   return {
     resolvers: {
       tmpl: function(resolver, templateString, refObj, wire) {
