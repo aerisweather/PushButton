@@ -1,12 +1,12 @@
-///<reference path="../../typings/vendor.d.ts" />
+///<reference path="../../../typings/vendor.d.ts" />
 import sinon = require('sinon');
 import _ = require('lodash');
-import Runner = require('../../lib/resource/ResourceCollection');
-import ResourceInterface = require('../../lib/resource/ResourceInterface');
-import ResultInterface = require('../../lib/resource/result/ResultInterface');
+import Runner = require('../../../lib/resource/ResourceCollection');
+import ResourceInterface = require('../../../lib/resource/ResourceInterface');
+import ResultInterface = require('../../../lib/resource/result/ResultInterface');
 import assert = require('assert');
 
-describe('Runner', () => {
+describe('ResourceCollection', () => {
 
   describe('deploy', () => {
     
