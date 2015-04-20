@@ -53,3 +53,5 @@ class ElasticBeanstalk implements ResourceInterface {
         });
     }
 }
+
+export = ElasticBeanstalk;
