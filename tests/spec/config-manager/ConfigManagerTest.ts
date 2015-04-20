@@ -12,13 +12,13 @@ describe('ConfigManager', () => {
   describe('wire', () => {
 
     describe('wireResource', () => {
-      var fooService:ResourceMock, barService:ResourceMock, serviceMap:any;
+      var fooService:ResourceMock, barService:ResourceMock, resourceMap:any;
 
       beforeEach(() => {
         fooService = new ResourceMock();
         barService = new ResourceMock();
 
-        serviceMap = {
+        resourceMap = {
           Foo: fooService.getCtorMock(),
           Bar: barService.getCtorMock()
         };
@@ -26,7 +26,7 @@ describe('ConfigManager', () => {
 
       it('should create a resource from a config', (done) => {
         var configManager = new ConfigManager();
-        configManager.setResourceMap(serviceMap);
+        configManager.setResourceMap(resourceMap);
 
         configManager.wireResource({
           name: 'foo-service',
@@ -42,7 +42,7 @@ describe('ConfigManager', () => {
 
       it('should create a resource which references a previous resource', (done) => {
         var configManager = new ConfigManager();
-        configManager.setResourceMap(serviceMap);
+        configManager.setResourceMap(resourceMap);
 
         configManager.wireResource({
           name: 'foo-service',
@@ -68,7 +68,7 @@ describe('ConfigManager', () => {
 
       it('should create a resource which references a param', (done) => {
         var configManager = new ConfigManager();
-        configManager.setResourceMap(serviceMap);
+        configManager.setResourceMap(resourceMap);
 
         configManager.wireParams({
           paramA: 'paramValA'
@@ -93,7 +93,7 @@ describe('ConfigManager', () => {
 
       it('should create a resource using the tmpl plugin', (done) => {
         var configManager = new ConfigManager();
-        configManager.setResourceMap(serviceMap);
+        configManager.setResourceMap(resourceMap);
 
         configManager.addPlugin(tmpl);
 
