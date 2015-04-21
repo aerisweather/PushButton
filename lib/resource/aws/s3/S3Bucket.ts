@@ -1,12 +1,12 @@
 ///<reference path="../../../../typings/vendor.d.ts" />
 import ResourceInterface = require('../../ResourceInterface');
 import when = require('when');
-import BucketResult = require('./result/BucketResultInterface');
-import BucketConfig = require('./config/BucketConfigInterface');
+import BucketResult = require('./result/S3BucketResultInterface');
+import BucketConfig = require('./config/S3BucketConfigInterface');
 import lift = require('../../../util/lift');
 import AWS = require('aws-sdk');
 
-class Bucket implements ResourceInterface {
+class S3Bucket implements ResourceInterface {
   protected config:BucketConfig;
 
   public constructor(config:BucketConfig) {
@@ -27,4 +27,4 @@ class Bucket implements ResourceInterface {
   }
 
 }
-export = Bucket;
+export = S3Bucket;

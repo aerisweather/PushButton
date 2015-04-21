@@ -1,11 +1,8 @@
 ///<reference path="../../../../../typings/vendor.d.ts" />
 import ResourceConfigInterface = require('../../../config/ResourceConfigInterface');
 import FileProvider = require('../../../system/file/FileProviderInterface');
-import Bucket = require('../Bucket');
 
-interface ObjectConfigInterface extends ResourceConfigInterface {
-  fileProvider: FileProvider;
-  bucket: Bucket;
-  key: string;
+interface S3BucketConfigInterface extends ResourceConfigInterface {
+  name: string;
 }
-export = ObjectConfigInterface;
+export = S3BucketConfigInterface;

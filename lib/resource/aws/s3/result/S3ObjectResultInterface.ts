@@ -1,7 +1,7 @@
 ///<reference path="../../../../../typings/vendor.d.ts" />
 import ResultInterface = require('../../../result/ResultInterface');
 
-interface ObjectResultInterface extends ResultInterface {
+interface S3ObjectResultInterface extends ResultInterface {
 }
 
-export = ObjectResultInterface;
+export = S3ObjectResultInterface;

@@ -1,9 +1,9 @@
 ///<reference path="../../../../typings/vendor.d.ts" />
 import ResourceInterface = require('../../ResourceInterface');
 import when = require('when');
-import ObjectResult = require('./result/ObjectResultInterface');
-import ObjectConfig = require('./config/ObjectConfigInterface');
-import Bucket = require('./Bucket');
+import ObjectResult = require('./result/S3ObjectResultInterface');
+import ObjectConfig = require('./config/S3ObjectConfigInterface');
+import Bucket = require('./S3Bucket');
 import lift = require('../../../util/lift');
 import AWS = require('aws-sdk');
 import fs = require('fs');
