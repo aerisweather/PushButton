@@ -8,7 +8,7 @@ var EbEnvironment = require('../lib/resource/aws/elasticbeanstalk/EbEnvironment'
 var UNIQUE = Math.round(Math.random() * 1000);
 var fileProvider = new GitArchiveProvider({});
 var bucket = new S3Bucket({
-  name: 'turbine-eb'
+  bucketName: 'turbine-eb'
 });
 var s3Obj = new S3Object({
   fileProvider: fileProvider,
