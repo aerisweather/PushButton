@@ -2,6 +2,7 @@
 import ResourceConfigInterface = require('../../../config/ResourceConfigInterface');
 import EbAppVersion = require('../EbAppVersion');
 import EbConfigTagInterface = require('./EbConfigTagInterface');
+import SqsQueue = require('../../sqs/SqsQueue');
 
 interface EbEnvironmentConfigInterface extends ResourceConfigInterface {
     applicationName: string;
@@ -17,7 +18,10 @@ interface EbEnvironmentConfigInterface extends ResourceConfigInterface {
         instances?:any;
         notifications?:any;
         updates?:any;
-        sqsWorker?:any;
+        sqsWorker?: {
+            sqsQueue:SqsQueue;
+            queueUrl?:string;
+        }
         loadBalancing?:any;
         phpContainer?:any;
         nodeJsContainer?:any;
