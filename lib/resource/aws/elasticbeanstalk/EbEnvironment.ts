@@ -12,11 +12,11 @@ import lift = require('../../../util/lift');
 /**
  * A single deployable elastic beanstalk environment.
  */
-class ElasticBeanstalk implements ResourceInterface {
+class EbEnvironment implements ResourceInterface {
 
-    resourceConfig:any;
-    eb:AWS.ElasticBeanstalk;
-    createEbEnvironment:any;
+    protected resourceConfig:any;
+    protected eb:AWS.ElasticBeanstalk;
+    protected createEbEnvironment:any;
 
     constructor(resourceConfig) {
         this.resourceConfig = resourceConfig;
@@ -73,4 +73,4 @@ class ElasticBeanstalk implements ResourceInterface {
     }
 }
 
-export = ElasticBeanstalk;
+export = EbEnvironment;
