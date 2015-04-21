@@ -11,13 +11,13 @@ interface EbEnvironmentConfigInterface extends ResourceConfigInterface {
     os: string;
     stack: string;
   };
-  options?: Dictionary<any>;
-  rawOptions?: Dictionary<any>;
+  options?: any;
+  rawOptions?: any;
   environmentVars?: Dictionary<string>;
   description?: string;
   cnamePrefix?: string;
   tier?: string;
-  tags?: Dictionary<any>;
+  tags?: any;
   templateName?: string;
 }
 export = EbEnvironmentConfigInterface;

@@ -66,7 +66,7 @@ class EbConfigMapper {
      */
     public getEbCreateConfig(config:EbEnvironmentConfig):When.Promise<AWS.ElasticBeanstalk.Params.createEnvironment> {
         return this.getLatestSolutionStack(config.solutionStack.os, config.solutionStack.stack)
-            .then(function (solutionStackName) {
+            .then((solutionStackName) => {
                 var optionsSettings = [];
                 var mappedOptions = [];
                 var rawOptions = [];
@@ -89,13 +89,13 @@ class EbConfigMapper {
                     "EnvironmentName": config.environmentName,
                     "Description": config.description,
                     "CNAMEPrefix": config.cnamePrefix,
-                    "Tier": this.getTier(config.tier, this.tierConfig),
+                    "Tier": EbConfigMapper.getTier(config.tier, this.tierConfig),
                     "Tags": config.tags,
                     "TemplateName": config.templateName || null,
                     "SolutionStackName": solutionStackName,
                     "OptionSettings": optionsSettings
                 }
-            }.bind(this));
+            });
     }
 
     /**
@@ -103,7 +103,7 @@ class EbConfigMapper {
      *
      * Maps options in the user friendly config way to the Elastic Beanstalk EbOptions array
      */
-    public static getOptionsConfigMapped(optionsConfig:Dictionary<any>, optionsConfigMap:Dictionary<any>, results?:Array<EbOption>):Array<EbOption> {
+    public static getOptionsConfigMapped(optionsConfig:any, optionsConfigMap:any, results?:Array<EbOption>):Array<EbOption> {
         if (results === undefined) {
             results = [];
         }

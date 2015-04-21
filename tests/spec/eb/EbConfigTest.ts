@@ -1,9 +1,11 @@
-var _ = require('lodash'),
-	assert = require('assert'),
-	ConfigError = require('../../../lib/error/ConfigError'),
-	EbConfig = require('../../../lib/eb/EbConfig'),
-	fs = require('fs-extra'),
-	path = require('path');
+///<reference path="../../../typings/vendor.d.ts" />
+
+import _ = require('lodash');
+import assert = require('assert');
+import ConfigError = require('../../../lib/error/ConfigError');
+import EbConfig = require('../../../lib/resource/aws/elasticbeanstalk/EbConfigMapper');
+import fs = require('fs-extra');
+import path = require('path');
 
 describe("EbConfigTest", function () {
 	beforeEach(function () {
