@@ -8,9 +8,42 @@ declare module 'AWS' {
   class ElasticBeanstalk {
     constructor(...params:any[]);
     createApplication(...params:any[]):any;
+    createEnvironment(params:ElasticBeanstalk.Params.createEnvironment, cb:Callback<any>);
     createApplicationVersion(...params:any[]):any;
     describeApplications(options:any, callback:Callback<any>):void;
     listAvailableSolutionStacks(callback:Callback<any>);
+  }
+
+  module ElasticBeanstalk {
+    module Params {
+      interface createEnvironment {
+        ApplicationName: string;
+        EnvironmentName: string;
+        CNAMEPrefix?: string;
+        Description?: string;
+        OptionSettings?: {
+          Namespace: string;
+          OptionName: string;
+          Value: string;
+        }[];
+        OptionsToRemove?: {
+          Namespace: string;
+          OptionName: string;
+        }[];
+        SolutionStackName?: string;
+        Tags?: {
+          Key: string;
+          Value: string;
+        }[];
+        TemplateName?: string;
+        Tier?: {
+          Name: string;
+          Type: string;
+          Version: string;
+        };
+        VersionLabel?: string;
+      }
+    }
   }
 
   class S3 {

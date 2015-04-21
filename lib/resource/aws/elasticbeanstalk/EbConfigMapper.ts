@@ -7,10 +7,11 @@ import fs = require('fs-extra');
 import EbOption = require('./EbOption');
 import path = require('path');
 import when = require('when');
+import EbEnvironmentConfig = require('./config/EbEnvironmentConfigInterface')
 
-var debug = debugMod('EbConfig');
+var debug = debugMod('EbConfigMapper');
 
-class EbConfig {
+class EbConfigMapper {
 
     protected eb:AWS.ElasticBeanstalk;
     protected config:any;
@@ -63,7 +64,7 @@ class EbConfig {
      *
      * Gets a config ready for AWS ElasticBeanstalk createEnvironment.
      */
-    public getEbCreateConfig(config:any) {
+    public getEbCreateConfig(config:EbEnvironmentConfig):When.Promise<AWS.ElasticBeanstalk.Params.createEnvironment> {
         return this.getLatestSolutionStack(config.solutionStack.os, config.solutionStack.stack)
             .then(function (solutionStackName) {
                 var optionsSettings = [];
@@ -72,13 +73,13 @@ class EbConfig {
                 var envVars = [];
 
                 if (config.options) {
-                    mappedOptions = EbConfig.getOptionsConfigMapped(config.options, this.optionsConfigMap);
+                    mappedOptions = EbConfigMapper.getOptionsConfigMapped(config.options, this.optionsConfigMap);
                 }
                 if (config.rawOptions) {
-                    rawOptions = EbConfig.getRawOptionsMapped(config.rawOptions);
+                    rawOptions = EbConfigMapper.getRawOptionsMapped(config.rawOptions);
                 }
                 if (config.environmentVars) {
-                    envVars = EbConfig.getEnvironmentVarsMapped(config.environmentVars);
+                    envVars = EbConfigMapper.getEnvironmentVarsMapped(config.environmentVars);
                 }
                 optionsSettings = optionsSettings.concat(mappedOptions, rawOptions, envVars);
 
@@ -90,7 +91,6 @@ class EbConfig {
                     "CNAMEPrefix": config.cnamePrefix,
                     "Tier": this.getTier(config.tier, this.tierConfig),
                     "Tags": config.tags,
-                    "VersionLabel": config.versionLabel || "{{version}}",
                     "TemplateName": config.templateName || null,
                     "SolutionStackName": solutionStackName,
                     "OptionSettings": optionsSettings
@@ -110,7 +110,7 @@ class EbConfig {
         for (var i in optionsConfig) {
             if (optionsConfig.hasOwnProperty(i)) {
                 if (optionsConfig[i] instanceof Object) {
-                    EbConfig.getOptionsConfigMapped(optionsConfig[i], optionsConfigMap[i], results);
+                    EbConfigMapper.getOptionsConfigMapped(optionsConfig[i], optionsConfigMap[i], results);
                 }
                 else {
                     if (optionsConfigMap[i]) {
@@ -189,4 +189,4 @@ class EbConfig {
     }
 }
 
-export = EbConfig;
+export = EbConfigMapper;

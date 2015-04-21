@@ -3,7 +3,8 @@
 import AWS = require('aws-sdk');
 import ConfigError = require('../../../error/ConfigError');
 import InvalidInputError = require('../../../error/InvalidInputError');
-import EbConfig = require('./EbConfig');
+import EbEnvironmentConfig = require('./config/EbEnvironmentConfigInterface');
+import EbConfig = require('./EbConfigMapper');
 import EbResult = require('./EbResult');
 import ResourceInterface = require('../../ResourceInterface');
 import when = require('when');
@@ -13,17 +14,17 @@ import lift = require('../../../util/lift');
  * A single deployable elastic beanstalk environment.
  */
 class EbEnvironment implements ResourceInterface {
-  protected resourceConfig:any;
+  protected resourceConfig:EbEnvironmentConfig;
   protected eb:AWS.ElasticBeanstalk;
-  protected createEbEnvironment:any;
+  protected createEbEnvironment:(params:AWS.ElasticBeanstalk.Params.createEnvironment) => any;
 
-  constructor(resourceConfig) {
+  constructor(resourceConfig:EbEnvironmentConfig) {
     this.resourceConfig = resourceConfig;
     if (this.resourceConfig.appVersion === undefined) {
       throw new ConfigError('EB -> appVersion', 'An appVersion must be passed to an ElasticBeanstalk resource, this should reference an ElasticBeanstalk AppVersion resource.');
     }
     this.eb = new AWS.ElasticBeanstalk({region: this.resourceConfig.region});
-    this.createEbEnvironment = lift<any>(this.eb.createApplication, this.eb);
+    this.createEbEnvironment = lift<any>(this.eb.createEnvironment, this.eb);
   }
 
   public deploy():when.Promise<EbResult> {
@@ -31,13 +32,13 @@ class EbEnvironment implements ResourceInterface {
     var EBC = <any>EbConfig;
     var ebConfig:EbConfig = new EBC(this.eb);
 
-    return ebConfig.getEbCreateConfig(this.resourceConfig.config)
-      .then(function (createConfig) {
+    return ebConfig.getEbCreateConfig(this.resourceConfig)
+      .then((createConfig) => {
         //AppVersion referenced by this.resourceConfig.appVersion
-        createConfig.VersionLabel = this.resourceConfig.appVersion.versionLabel;
+        createConfig.VersionLabel = this.resourceConfig.appVersion.getVersionLabel();
         return this.createEbEnvironment(createConfig);
       })
-      .then(function (createEnvironmentResult) {
+      .then((createEnvironmentResult) => {
         return new EbResult();
       });
   }

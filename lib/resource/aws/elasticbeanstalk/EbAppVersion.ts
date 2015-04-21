@@ -32,6 +32,10 @@ class EbAppVersion implements ResourceInterface {
         return new EbAppVersionResult(this.resourceConfig.VersionLabel);
       });
   }
+
+  public getVersionLabel():string {
+    return this.resourceConfig.VersionLabel;
+  }
 }
 
 export = EbAppVersion;
