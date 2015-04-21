@@ -17,7 +17,9 @@ class FileProvider implements FileProviderInterface {
     return when.promise<FileProviderResult>((resolve, reject) => {
       resolve({
         message: 'Created stream for file at ' + this.config.path,
-        fileStream: fs.createReadStream(this.config.path)
+        fileStream: fs.createReadStream(this.config.path, {
+          flags:'r'
+        })
       });
     });
   }
