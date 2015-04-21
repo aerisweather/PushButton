@@ -12,12 +12,12 @@ var debug = debugMod('EbConfig');
 
 class EbConfig {
 
-    eb:AWS.ElasticBeanstalk;
-    config:any;
-    tierConfig:any;
-    optionsConfigMap:any;
+    protected eb:AWS.ElasticBeanstalk;
+    protected config:any;
+    protected tierConfig:any;
+    protected optionsConfigMap:any;
 
-    construct(eb:AWS.ElasticBeanstalk, tierConfig?:any, optionsConfigMap?:any) {
+    public construct(eb?:any, tierConfig?:any, optionsConfigMap?:any) {
         this.eb = eb;
 
         if (!tierConfig) {

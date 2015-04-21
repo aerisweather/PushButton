@@ -13,7 +13,6 @@ import lift = require('../../../util/lift');
  * A single deployable elastic beanstalk environment.
  */
 class EbEnvironment implements ResourceInterface {
-
   protected resourceConfig:any;
   protected eb:AWS.ElasticBeanstalk;
   protected createEbEnvironment:any;
@@ -24,11 +23,13 @@ class EbEnvironment implements ResourceInterface {
       throw new ConfigError('EB -> appVersion', 'An appVersion must be passed to an ElasticBeanstalk resource, this should reference an ElasticBeanstalk AppVersion resource.');
     }
     this.eb = new AWS.ElasticBeanstalk({region: this.resourceConfig.region});
-    this.createEbEnvironment = lift<any>(AWS.ElasticBeanstalk.prototype.createApplication, this.eb);
+    this.createEbEnvironment = lift<any>(this.eb.createApplication, this.eb);
   }
 
   public deploy():when.Promise<EbResult> {
-    var ebConfig = new EbConfig(this.eb);
+    // HACK: Fixes TS compiler error, that I can't otherwise figure out
+    var EBC = <any>EbConfig;
+    var ebConfig:EbConfig = new EBC(this.eb);
 
     return ebConfig.getEbCreateConfig(this.resourceConfig.config)
       .then(function (createConfig) {
