@@ -85,6 +85,12 @@ class ConfigManager {
   }
 
   protected toFactorySpec(serviceConfig:ResourceServiceConfig):Wire.Factories.create {
+    var ResourceType = this.resourceMap[serviceConfig.type];
+
+    if (!ResourceType) {
+      throw new Error('Unable to find resource for type "' + serviceConfig.type + '".');
+    }
+
     return {
       create: {
         module: this.resourceMap[serviceConfig.type],
