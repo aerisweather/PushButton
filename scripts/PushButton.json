@@ -78,11 +78,16 @@
           "os": "64bit Amazon Linux",
           "stack": "PHP 5.5"
         },
-        "tier": "WebServer",
+        "tier": "Worker",
         "cnamePrefix": {"$ref": "tmpl!push-button-{{params.version}}"},
         "environmentVars": {
           "FOO": "BAR",
           "SQS_QUEUE": {  "$ref": "resources.pb-queue.queueUrl" }
+        },
+        "options": {
+          "sqsWorker": {
+            "sqsQueue": { "$ref": "resources.pb-queue" }
+          }
         }
       }
     }
