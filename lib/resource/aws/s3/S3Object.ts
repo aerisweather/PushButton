@@ -3,6 +3,7 @@ import ResourceInterface = require('../../ResourceInterface');
 import when = require('when');
 import ObjectResult = require('./result/S3ObjectResultInterface');
 import ObjectConfig = require('./config/S3ObjectConfigInterface');
+import SourceBundle = require('../elasticbeanstalk/SourceBundleInterface');
 import Bucket = require('./S3Bucket');
 import lift = require('../../../util/lift');
 import AWS = require('aws-sdk');
@@ -34,12 +35,23 @@ class S3Object implements ResourceInterface {
       });
   }
 
-  public getUrl() {
+  public getUrl():string {
     // There's gotta be a safer way to get the actual object URL
     // using the S3 api, but I can't find it in the docs....
     return 'https://s3.amazonaws.com/{BUCKET_NAME}/{OBJECT_KEY}'.
       replace('{BUCKET_NAME}', this.getBucket().getName()).
       replace('{OBJECT_KEY}', this.config.key);
+  }
+
+  public getKey():string {
+    return this.config.key;
+  }
+
+  public getSourceBundle():SourceBundle {
+    return {
+      S3Bucket: this.getBucket().getName(),
+      S3Key: this.getKey()
+    };
   }
 
   protected getFileStream():When.Promise<fs.ReadStream> {
