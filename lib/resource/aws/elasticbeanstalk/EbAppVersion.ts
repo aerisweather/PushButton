@@ -18,7 +18,7 @@ class EbAppVersion implements ResourceInterface {
   constructor(resourceConfig:EbAppVersionConfig) {
     this.resourceConfig = resourceConfig;
     this.eb = new AWS.ElasticBeanstalk({region: this.resourceConfig.region});
-    this.createApplicationVersion = lift<any>(AWS.ElasticBeanstalk.prototype.createApplicationVersion, this.eb);
+    this.createApplicationVersion = lift<any>(this.eb.createApplicationVersion, this.eb);
   }
 
   public deploy():when.Promise<EbAppVersionResult> {
@@ -28,7 +28,7 @@ class EbAppVersion implements ResourceInterface {
       Description: this.resourceConfig.Description,
       SourceBundle: this.resourceConfig.s3Object.getSourceBundle()
     })
-      .then(function () {
+      .then(() => {
         return new EbAppVersionResult(this.resourceConfig.VersionLabel);
       });
   }
