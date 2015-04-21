@@ -4,20 +4,22 @@ import SqsQueueResult = require('./result/SqsQueueResultInterface');
 import ResourceInterface = require('../../ResourceInterface');
 import _ = require('lodash');
 import when = require('when');
-import sqsLifted = require('./service/sqsLifted');
+import SqsLifted = require('./service/SqsLifted');
 import AWS = require('aws-sdk');
 import SQS = AWS.SQS;
 
 class SqsQueue implements ResourceInterface {
   protected config:SqsQueueConfig;
   protected queueUrl:string = null;
+  protected sqs:SqsLifted;
 
   public constructor(config:SqsQueueConfig) {
     this.config = config;
+    this.sqs = new SqsLifted({ region: config.region });
   }
 
   public deploy():When.Promise<SqsQueueResult> {
-    return sqsLifted.createQueue({
+    return this.sqs.createQueue({
       QueueName: this.config.queueName,
       Attributes: this.config.attributes || {}
     }).
@@ -38,7 +40,7 @@ class SqsQueue implements ResourceInterface {
       return when(this.queueUrl);
     }
 
-    return sqsLifted.
+    return this.sqs.
       getQueueUrl({
         QueueName: this.config.queueName
       }).
