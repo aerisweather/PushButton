@@ -25,7 +25,7 @@ class EbAppVersion implements ResourceInterface {
             .createApplicationVersion({
                 ApplicationName: this.resourceConfig.ApplicationName,
                 VersionLabel: this.resourceConfig.VersionLabel,
-                Description: '[Push-Button] App Version Description.',
+                Description: this.resourceConfig.Description,
                 SourceBundle: {
                     S3Bucket: this.resourceConfig.s3AppBucket.getBucketName(),
                     S3Key: this.resourceConfig.s3AppBucket.getKey()
