@@ -4,7 +4,7 @@ import AWS = require('aws-sdk');
 import ConfigError = require('../../../error/ConfigError');
 import debugMod = require('debug');
 import fs = require('fs-extra');
-import EbOption = require('./EbOption');
+import EbOptionInterface = require('./config/EbOptionInterface');
 import path = require('path');
 import when = require('when');
 
@@ -103,7 +103,7 @@ class EbConfig {
      *
      * Maps options in the user friendly config way to the Elastic Beanstalk EbOptions array
      */
-    public static getOptionsConfigMapped(optionsConfig:Dictionary<any>, optionsConfigMap:Dictionary<any>, results?:Array<EbOption>):Array<EbOption> {
+    public static getOptionsConfigMapped(optionsConfig:Dictionary<any>, optionsConfigMap:Dictionary<any>, results?:Array<EbOptionInterface>):Array<EbOptionInterface> {
         if (results === undefined) {
             results = [];
         }
@@ -138,7 +138,7 @@ class EbConfig {
      *
      * Maps raw options to the Elastic Beanstalk friendly EbOptions array
      */
-    public static getRawOptionsMapped(rawOptions:Dictionary<any>):Array<EbOption> {
+    public static getRawOptionsMapped(rawOptions:Dictionary<any>):Array<EbOptionInterface> {
         var results = [];
         for (var optionName in rawOptions) {
             if (rawOptions.hasOwnProperty(optionName)) {
@@ -161,7 +161,7 @@ class EbConfig {
      *
      * Maps Environment Options to the Elastic Beanstalk friendly EbOptions array
      */
-    public static getEnvironmentVarsMapped(envVarOptions:Dictionary<any>):Array<EbOption> {
+    public static getEnvironmentVarsMapped(envVarOptions:Dictionary<any>):Array<EbOptionInterface> {
         var results = [];
         for (var optionName in envVarOptions) {
             if (envVarOptions.hasOwnProperty(optionName)) {

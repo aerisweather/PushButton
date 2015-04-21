@@ -1,7 +1,7 @@
-interface EbOption {
+interface EbOptionInterface {
     Namespace:string;
     OptionName:string;
     Value:string;
 }
 
-export = EbOption;
+export = EbOptionInterface;
