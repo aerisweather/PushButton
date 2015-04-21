@@ -140,7 +140,7 @@ describe("EbConfigMapper", function () {
 });
 
 function getEbConfigMapReal() {
-  return require('./fixture/example-a');
+  return require('../../../../../config/eb-config-map.json');
 }
 
 function getTiersMock() {

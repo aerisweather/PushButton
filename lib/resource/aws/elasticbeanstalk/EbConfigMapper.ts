@@ -25,13 +25,13 @@ class EbConfigMapper {
 
     if (!tierConfig) {
       debug('No tierConfig supplied, loading from config dir.');
-      tierConfig = fs.readJsonSync(path.join(__dirname, '..', '..', 'config', 'eb-config-tiers.json'));
+      tierConfig = require('../../../../config/eb-config-tiers.json');
     }
     this.tierConfig = tierConfig;
 
     if (!optionsConfigMap) {
       debug('No optionsConfigMap supplied, loading from config dir.');
-      optionsConfigMap = fs.readJsonSync(path.join(__dirname, '..', '..', 'config', 'eb-config-map.json'));
+      optionsConfigMap = require('../../../../config/eb-config-map.json');
     }
     this.optionsConfigMap = optionsConfigMap;
   }
