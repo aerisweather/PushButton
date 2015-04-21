@@ -9,6 +9,7 @@ import path = require('path');
 import when = require('when');
 import _ = require('lodash');
 import EbEnvironmentConfig = require('./config/EbEnvironmentConfigInterface');
+import EbParams = AWS.ElasticBeanstalk.Params
 
 
 var debug = debugMod('EbConfigMapper');
@@ -66,7 +67,7 @@ class EbConfigMapper {
    *
    * Gets a config ready for AWS ElasticBeanstalk createEnvironment.
    */
-  public getEbCreateConfig(config:EbEnvironmentConfig):When.Promise<AWS.ElasticBeanstalk.Params.createEnvironment> {
+  public getEbCreateConfig(config:EbEnvironmentConfig):When.Promise<EbParams.createEnvironment> {
     return this.getLatestSolutionStack(config.solutionStack.os, config.solutionStack.stack)
       .then((solutionStackName) => {
         var optionsSettings = [];
@@ -86,7 +87,7 @@ class EbConfigMapper {
         optionsSettings = optionsSettings.concat(mappedOptions, rawOptions, envVars);
 
 
-        var ebParams = {
+        var ebParams:EbParams.createEnvironment = {
           "ApplicationName": config.applicationName,
           "EnvironmentName": config.environmentName,
           "Description": config.description,
@@ -98,8 +99,8 @@ class EbConfigMapper {
           "OptionSettings": optionsSettings
         };
         // Remove null values
-        ebParams = _.pick(ebParams, (val, key) => !_.isNull(val) && !_.isUndefined(val));
-        return ebParams;
+        ebParams = _.pick<any, any>(ebParams, (val, key) => !_.isNull(val) && !_.isUndefined(val));
+        return <EbParams.createEnvironment>ebParams;
       });
   }
 
