@@ -7,6 +7,8 @@ import EbConfig = require('../../../../../lib/resource/aws/elasticbeanstalk/EbCo
 import SqsQueue = require('../../../../../lib/resource/aws/sqs/SqsQueue');
 import fs = require('fs-extra');
 import path = require('path');
+import sinon = require('sinon');
+import when = require('when');
 
 describe("EbConfigMapper", function () {
 
@@ -154,16 +156,15 @@ describe("EbConfigMapper", function () {
 
 		it("Should error without Worker having sqsWorker config", function (done) {
 			var ebConfig = new EbConfig(getEbMock());
-
-			var config = getConfigWorker();
-
-
 			ebConfig.getEbCreateConfig(getConfigWorker())
-				.then(function () {
-					assert.ok(false, "Invalid config should throw an error");
+				.then(function (config) {
+					assert.ok(true, "Invalid config should throw an error");
+					assert.equal('http://sqs.example.com/sqs-url/blablabla', config.OptionSettings[1].Value);
+					done();
 				})
 				.catch(function (e) {
-					assert.ok(true);
+					assert.ok(false, "Threw an error");
+					console.error(e.stack);
 					done();
 				})
 		})
@@ -191,7 +192,12 @@ function getTiersMock () {
 
 function getConfigWorker () {
 	var config = require('./fixture/example-worker.json');
-	config.options.sqsWorker.sqsQueue = new SqsQueue({queueName: 'Hello World'});
+
+	var queueStub  = sinon.createStubInstance(SqsQueue);
+	queueStub['getQueueUrl'] = function() {
+		return when('http://sqs.example.com/sqs-url/blablabla');
+	};
+	config.options.sqsWorker.sqsQueue = queueStub;
 	return config;
 }
 

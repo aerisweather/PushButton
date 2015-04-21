@@ -69,7 +69,7 @@ class EbConfigMapper {
 	 */
 	public getEbCreateConfig (config:EbEnvironmentConfig):When.Promise<AWS.ElasticBeanstalk.Params.createEnvironment> {
 		return this.getLatestSolutionStack(config.solutionStack.os, config.solutionStack.stack)
-			.tap(function() {
+			.tap(function () {
 				handleSqsWorker(config);
 			})
 			.then((solutionStackName) => {
@@ -90,22 +90,22 @@ class EbConfigMapper {
 				optionsSettings = optionsSettings.concat(mappedOptions, rawOptions, envVars);
 
 
-        var ebParams:EbParams.createEnvironment = {
-          "ApplicationName": config.applicationName,
-          "EnvironmentName": config.environmentName,
-          "Description": config.description,
-          "CNAMEPrefix": config.cnamePrefix,
-          "Tier": EbConfigMapper.getTier(config.tier, this.tierConfig),
-          "Tags": config.tags,
-          "TemplateName": config.templateName || null,
-          "SolutionStackName": solutionStackName,
-          "OptionSettings": optionsSettings
-        };
-        // Remove null values
-        ebParams = _.pick<any, any>(ebParams, (val, key) => !_.isNull(val) && !_.isUndefined(val));
-        return <EbParams.createEnvironment>ebParams;
-      });
-  }
+				var ebParams:EbParams.createEnvironment = {
+					"ApplicationName": config.applicationName,
+					"EnvironmentName": config.environmentName,
+					"Description": config.description,
+					"CNAMEPrefix": config.cnamePrefix,
+					"Tier": EbConfigMapper.getTier(config.tier, this.tierConfig),
+					"Tags": config.tags,
+					"TemplateName": config.templateName || null,
+					"SolutionStackName": solutionStackName,
+					"OptionSettings": optionsSettings
+				};
+				// Remove null values
+				ebParams = _.pick<any, any>(ebParams, (val, key) => !_.isNull(val) && !_.isUndefined(val));
+				return <EbParams.createEnvironment>ebParams;
+			});
+	}
 
 	/**
 	 * Get Options Config, Mapped
@@ -170,7 +170,7 @@ class EbConfigMapper {
 	public static getEnvironmentVarsMapped (envVarOptions:Dictionary<any>):Array<EbOption> {
 		var results = [];
 
-		_.each(envVarOptions, function(value, optionName) {
+		_.each(envVarOptions, function (value, optionName) {
 			results.push({
 				Namespace: 'aws:elasticbeanstalk:application:environment',
 				OptionName: optionName,
@@ -217,7 +217,7 @@ function handleSqsWorker (config:EbEnvironmentConfig):when.Promise<EbEnvironment
 				return config;
 			});
 	}
-	else if(config.options.sqsWorker) {
+	else if (config.options.sqsWorker) {
 		throw new ConfigError('EB.options.sqsWorker', "An ElasticBeanstalk Environment that is NOT a worker tier has options.sqsWorker, this should be removed");
 	}
 	return when(config);
