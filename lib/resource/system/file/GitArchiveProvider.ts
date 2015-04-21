@@ -17,6 +17,7 @@ class GitArchiveProvider implements FileProviderInterface {
       });
 
       resolve({
+        message: 'Successfully archived git repo at ' + process.cwd(),
         fileStream: archive
       });
     });
