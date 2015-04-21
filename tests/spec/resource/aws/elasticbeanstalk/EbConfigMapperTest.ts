@@ -1,20 +1,13 @@
-///<reference path="../../../typings/vendor.d.ts" />
+///<reference path="../../../../../typings/vendor.d.ts" />
 
 import _ = require('lodash');
 import assert = require('assert');
-import ConfigError = require('../../../lib/error/ConfigError');
-import EbConfig = require('../../../lib/resource/aws/elasticbeanstalk/EbConfigMapper');
+import ConfigError = require('../../../../../lib/error/ConfigError');
+import EbConfig = require('../../../../../lib/resource/aws/elasticbeanstalk/EbConfigMapper');
 import fs = require('fs-extra');
 import path = require('path');
 
-describe("EbConfigTest", function () {
-	beforeEach(function () {
-
-	});
-
-	afterEach(function () {
-
-	});
+describe("EbConfigMapperTest", function () {
 
 	describe("getTier", function () {
 		it("should get Worker tier", function () {
