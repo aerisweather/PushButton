@@ -1,6 +1,7 @@
 ///<reference path="../../../../../typings/vendor.d.ts" />
 import ResourceConfigInterface = require('../../../config/ResourceConfigInterface');
 import EbAppVersion = require('../EbAppVersion');
+import EbConfigTagInterface = require('./EbConfigTagInterface');
 
 interface EbEnvironmentConfigInterface extends ResourceConfigInterface {
     applicationName: string;
@@ -26,7 +27,7 @@ interface EbEnvironmentConfigInterface extends ResourceConfigInterface {
     description?: string;
     cnamePrefix?: string;
     tier?: string;
-    tags?: any;
+    tags?: EbConfigTagInterface[];
     templateName?: string;
 }
 export = EbEnvironmentConfigInterface;
