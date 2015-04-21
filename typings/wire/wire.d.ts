@@ -32,7 +32,7 @@ declare module Wire {
 
   module Plugin {
     interface ReferenceResolver {
-      (resolver:Api.Resolver, refName:string, refObj:Dictionary<any>, wire):void;
+      (resolver:Api.Resolver, refName:string, refObj:any, wire):void;
     }
 
     module Api {
