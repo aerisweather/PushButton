@@ -9,18 +9,25 @@ import Resource = require('../resource/ResourceInterface');
 import ResourceServiceConfig = require('../config-manager/config/ResourceServiceConfigInterface');
 import defaultResourceMap = require('../../config/resource-map');
 import ConfigManager = require('../config-manager/ConfigManager');
+import events = require('events');
+
+var EventEmitter = events.EventEmitter;
 
 
 class ResourceCollection implements Resource {
   protected config:ResourceCollectionConfig;
 
   protected configManager:ConfigManager;
+  protected emit(event: string, ...args:any[]);
+  public on(event:string, cb:(...args:any[]) => void);
 
   constructor(config:ResourceCollectionConfig) {
     this.config = config;
 
     this.configManager = new ConfigManager();
     this.configManager.setResourceMap(defaultResourceMap);
+
+    EventEmitter.call(this);
   }
 
   public deploy():when.Promise<ResourceCollectionResult> {
@@ -52,8 +59,18 @@ class ResourceCollection implements Resource {
       wireResource(serviceConfig).
       then((resource:Resource) => {
         var actions = serviceConfig.actions.
-          map((action:string) =>
-            () => resource[action]()
+          map((action:string) => {
+            return () => {
+              return resource[action]().
+                tap((result) => {
+                  this.emit('deploy', result, resource);
+                }).
+                catch((err:Error) => {
+                  this.emit('error', err, resource);
+                  throw err;
+                });
+            }
+          }
         );
 
         return sequence<Result>(actions);
@@ -69,5 +86,6 @@ class ResourceCollection implements Resource {
     this.configManager = configManager;
   }
 }
+_.extend(ResourceCollection.prototype, EventEmitter.prototype);
 
 export = ResourceCollection;
