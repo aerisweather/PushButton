@@ -86,7 +86,7 @@ class EbConfigMapper {
         optionsSettings = optionsSettings.concat(mappedOptions, rawOptions, envVars);
 
 
-        return {
+        var ebParams = {
           "ApplicationName": config.applicationName,
           "EnvironmentName": config.environmentName,
           "Description": config.description,
@@ -96,7 +96,10 @@ class EbConfigMapper {
           "TemplateName": config.templateName || null,
           "SolutionStackName": solutionStackName,
           "OptionSettings": optionsSettings
-        }
+        };
+        // Remove null values
+        ebParams = _.pick(ebParams, (val, key) => !_.isNull(val) && !_.isUndefined(val));
+        return ebParams;
       });
   }
 
