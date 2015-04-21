@@ -38,6 +38,42 @@ declare module 'AWS' {
       }
     }
   }
+
+  class SQS {
+    public createQueue(params:SQS.Params.createQueue, cb?:Callback<SQS.Response.createQueue>);
+    public deleteQueue(params:any, cb?:Callback<any>);
+    public getQueueUrl(params:any, cb?:Callback<any>);
+    public getQueueAttributes(params:any, cb?:Callback<any>);
+    public listQueues(params:any, cb?:Callback<any>);
+    public purgeQueue(params:any, cb?:Callback<any>);
+    public sendMessage(params:any, cb?:Callback<any>);
+    public setQueueAttributes(params:any, cb?:Callback<any>);
+  }
+
+  module SQS {
+
+    interface QueueAttributes {
+      DelaySeconds?: number;
+      MaximumMessageSize?: number;
+      MessageRetentionPeriod?: number;
+      Policy?: string;
+      ReceiveMessageWaitTimeseconds?: string;
+      VisibilityTimeout?: string;
+    }
+
+    module Params {
+      interface createQueue {
+        QueueName: string;
+        Attributes?: QueueAttributes;
+      }
+    }
+
+    module Response {
+      interface createQueue {
+        QueueUrl: string;
+      }
+    }
+  }
 }
 
 declare module 'aws-sdk' {
