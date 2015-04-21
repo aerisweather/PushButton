@@ -7,6 +7,7 @@ import ResourceCollectionConfig = require('../resource/config/ResourceCollection
 import Resource = require('../resource/ResourceInterface');
 import RunnerContext = require('context/RunnerContextInterface');
 import tmplPlugin = require('./plugin/tmpl');
+import jsonPlugin = require('./plugin/json');
 
 class ConfigManager {
   protected resourceMap = {};
@@ -16,7 +17,8 @@ class ConfigManager {
   public setResourceMap(serviceMap) {
     this.resourceMap = serviceMap;
     this.plugins = [
-      tmplPlugin
+      tmplPlugin,
+      jsonPlugin
     ];
   }
 
