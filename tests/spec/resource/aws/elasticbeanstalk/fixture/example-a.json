@@ -17,7 +17,7 @@
 				"environmentName": "example-api-{{version}}",
 				"description": "Example app that was deployed to an API.",
 				"cnamePrefix": "example-api-{{version}}",
-				"tier": "Worker",
+				"tier": "WebServer",
 				"tags": [
 					{
 						"Key": "Company",
@@ -36,9 +36,6 @@
 				"options": {
 					"scaling": {
 						"cooldown": 100
-					},
-					"sqsWorker": {
-						"sqsQueue": {"$ref": "sqs-queue" }
 					}
 				},
 				"rawOptions": {

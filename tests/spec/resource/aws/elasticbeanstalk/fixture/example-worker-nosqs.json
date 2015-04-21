@@ -1,0 +1,31 @@
+{
+	"applicationName": "Example API",
+	"environmentName": "example-api-{{version}}",
+	"description": "Example app that was deployed to an API.",
+	"cnamePrefix": "example-api-{{version}}",
+	"tier": "Worker",
+	"tags": [
+		{
+			"Key": "Company",
+			"Value": "SubCompanyA"
+		},
+		{
+			"Key": "Type",
+			"Value": "Web Server"
+		}
+	],
+	"versionLabel": "{{version}}",
+	"solutionStack": {
+		"os": "64bit Amazon Linux",
+		"stack": "PHP 5.5"
+	},
+	"options": {
+		"scaling": {
+			"cooldown": 100
+		}
+	},
+	"rawOptions": {
+	},
+	"environmentVars": {
+	}
+}

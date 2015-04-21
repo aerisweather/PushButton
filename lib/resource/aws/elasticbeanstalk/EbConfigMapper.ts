@@ -68,12 +68,14 @@ class EbConfigMapper {
 	 */
 	public getEbCreateConfig (config:EbEnvironmentConfig):When.Promise<AWS.ElasticBeanstalk.Params.createEnvironment> {
 		return this.getLatestSolutionStack(config.solutionStack.os, config.solutionStack.stack)
+			.tap(function() {
+				handleSqsWorker(config);
+			})
 			.then((solutionStackName) => {
 				var optionsSettings = [];
 				var mappedOptions = [];
 				var rawOptions = [];
 				var envVars = [];
-
 
 				if (config.options) {
 					mappedOptions = EbConfigMapper.getOptionsConfigMapped(config.options, this.optionsConfigMap);
@@ -123,7 +125,7 @@ class EbConfigMapper {
 				results.push({
 					Namespace: namespace,
 					OptionName: optionName,
-					Value: <string>optionVal
+					Value: <string>_.result(optionsConfig, key)
 				});
 			}
 			else {
@@ -143,19 +145,16 @@ class EbConfigMapper {
 	 */
 	public static getRawOptionsMapped (rawOptions:Dictionary<any>):Array<EbOption> {
 		var results = [];
-		for (var optionName in rawOptions) {
-			if (rawOptions.hasOwnProperty(optionName)) {
-				var keyParts = optionName.split('.');
-				var namespace = keyParts[0];
-				var optionName = keyParts[1];
-				var value = rawOptions[optionName];
-				results.push({
-					Namespace: namespace,
-					OptionName: optionName,
-					Value: value
-				});
-			}
-		}
+		_.each(rawOptions, function (value, optionName) {
+			var keyParts = optionName.split('.');
+			var namespace = keyParts[0];
+			var optionName = keyParts[1];
+			results.push({
+				Namespace: namespace,
+				OptionName: optionName,
+				Value: <string>_.result(rawOptions, optionName)
+			});
+		});
 		return results;
 	}
 
@@ -166,15 +165,14 @@ class EbConfigMapper {
 	 */
 	public static getEnvironmentVarsMapped (envVarOptions:Dictionary<any>):Array<EbOption> {
 		var results = [];
-		for (var optionName in envVarOptions) {
-			if (envVarOptions.hasOwnProperty(optionName)) {
-				results.push({
-					Namespace: 'aws:elasticbeanstalk:application:environment',
-					OptionName: optionName,
-					Value: envVarOptions[optionName]
-				});
-			}
-		}
+
+		_.each(envVarOptions, function(value, optionName) {
+			results.push({
+				Namespace: 'aws:elasticbeanstalk:application:environment',
+				OptionName: optionName,
+				Value: <string>_.result(envVarOptions, optionName)
+			});
+		});
 		return results;
 	}
 
@@ -197,13 +195,13 @@ class EbConfigMapper {
  *
  * EBEnvironments need an SQS Worker if and only if they are a worker class. Validate that for us.
  */
-function handleSqsWorker(config:EbEnvironmentConfig):when.Promise<EbEnvironmentConfig> {
-	if(config.tier === "Worker") {
+function handleSqsWorker (config:EbEnvironmentConfig):when.Promise<EbEnvironmentConfig> {
+	if (config.tier === "Worker") {
 		//Only check for SQS Dependency if we are an SQS Worker
-		if(!config.options.sqsWorker) {
+		if (!config.options.sqsWorker) {
 			throw new ConfigError('EB.options.sqsWorker', "An ElasticBeanstalk Environment that is a Worker tier, needs configuration for it's SQS instance");
 		}
-		if(!config.options.sqsWorker.sqsQueue || !(config.options.sqsWorker.sqsQueue instanceof SqsQueue)) {
+		if (!config.options.sqsWorker.sqsQueue || !(config.options.sqsWorker.sqsQueue instanceof SqsQueue)) {
 			throw new ConfigError('EB.options.sqsWorker.sqsQueue', "An ElasticBeanstalk Environment that is a Worker tier, needs an SqsQueue resource in EB.options.sqsWorker.sqsQueue");
 		}
 		var sqsQueue = config.options.sqsWorker.sqsQueue;
@@ -214,6 +212,9 @@ function handleSqsWorker(config:EbEnvironmentConfig):when.Promise<EbEnvironmentC
 				config.options.sqsWorker.queueUrl = queueUrl;
 				return config;
 			});
+	}
+	else if(config.options.sqsWorker) {
+		throw new ConfigError('EB.options.sqsWorker', "An ElasticBeanstalk Environment that is NOT a worker tier has options.sqsWorker, this should be removed");
 	}
 	return when(config);
 }

@@ -4,6 +4,7 @@ import _ = require('lodash');
 import assert = require('assert');
 import ConfigError = require('../../../../../lib/error/ConfigError');
 import EbConfig = require('../../../../../lib/resource/aws/elasticbeanstalk/EbConfigMapper');
+import SqsQueue = require('../../../../../lib/resource/aws/sqs/SqsQueue');
 import fs = require('fs-extra');
 import path = require('path');
 
@@ -13,8 +14,8 @@ describe("EbConfigMapper", function () {
 		it("should get Worker tier", function () {
 			var tier = EbConfig.getTier("Worker", getTiersMock());
 			assert.ok(_.isEqual(tier, {
-				"Name":    "Worker",
-				"Type":    "SQS/HTTP",
+				"Name": "Worker",
+				"Type": "SQS/HTTP",
 				"Version": "1.0"
 			}));
 		});
@@ -22,8 +23,8 @@ describe("EbConfigMapper", function () {
 		it("should get WebServer tier", function () {
 			var tier = EbConfig.getTier("WebServer", getTiersMock());
 			assert.ok(_.isEqual(tier, {
-				"Name":    "WebServer",
-				"Type":    "Standard",
+				"Name": "WebServer",
+				"Type": "Standard",
 				"Version": "1.0"
 			}));
 		});
@@ -48,18 +49,18 @@ describe("EbConfigMapper", function () {
 			var options = EbConfig.getOptionsConfigMapped(config, optionsConfigMap);
 			assert.equal(options.length, 1);
 			assert.ok(_.isEqual(options[0], {
-				"Namespace":  "aws:autoscaling:asg",
+				"Namespace": "aws:autoscaling:asg",
 				"OptionName": "MinSize",
-				"Value":      2
+				"Value": 2
 			}))
 		});
 
 		it("should map a several properties", function () {
 			var optionsConfigMap = getEbConfigMapReal();
 			var config = {
-				scaling:      {
+				scaling: {
 					cooldown: 100,
-					trigger:  {
+					trigger: {
 						metric: 'CPUUtilization'
 					}
 				},
@@ -70,27 +71,27 @@ describe("EbConfigMapper", function () {
 			var options = EbConfig.getOptionsConfigMapped(config, optionsConfigMap);
 			assert.equal(options.length, 3);
 			assert.ok(_.isEqual(options[0], {
-				"Namespace":  "aws:autoscaling:asg",
+				"Namespace": "aws:autoscaling:asg",
 				"OptionName": "Cooldown",
-				"Value":      100
+				"Value": 100
 			}));
 			assert.ok(_.isEqual(options[1], {
-				"Namespace":  "aws:autoscaling:trigger",
+				"Namespace": "aws:autoscaling:trigger",
 				"OptionName": "MeasureName",
-				"Value":      "CPUUtilization"
+				"Value": "CPUUtilization"
 			}));
 			assert.ok(_.isEqual(options[2], {
-				"Namespace":  "aws:elasticbeanstalk:container:php:phpini",
+				"Namespace": "aws:elasticbeanstalk:container:php:phpini",
 				"OptionName": "document_root",
-				"Value":      '/var/www/public'
+				"Value": '/var/www/public'
 			}));
 		});
 
-		it("should error when a bad key is given", function() {
+		it("should error when a bad key is given", function () {
 			var optionsConfigMap = getEbConfigMapReal();
 			var config = {
-				scaling:      {
-					trigger:  {
+				scaling: {
+					trigger: {
 						metric: 'CPUUtilization'
 					},
 					madeUp: 'n/a'
@@ -109,7 +110,7 @@ describe("EbConfigMapper", function () {
 		it("Should get latest PHP Solution Stack", function (done) {
 			var ebConfig = new EbConfig(getEbMock());
 			var solutionStack = ebConfig.getLatestSolutionStack("64bit Amazon Linux", "PHP 5.5")
-				.then(function(solutionStack) {
+				.then(function (solutionStack) {
 					assert.equal(solutionStack, "64bit Amazon Linux 2015.03 v1.3.0 running PHP 5.5");
 					done();
 				});
@@ -117,7 +118,7 @@ describe("EbConfigMapper", function () {
 		it("Should get latest Node.js Solution Stack", function (done) {
 			var ebConfig = new EbConfig(getEbMock());
 			var solutionStack = ebConfig.getLatestSolutionStack("64bit Amazon Linux", "Node.js")
-				.then(function(solutionStack) {
+				.then(function (solutionStack) {
 					assert.equal(solutionStack, "64bit Amazon Linux 2015.03 v1.3.0 running Node.js");
 					done();
 				});
@@ -125,45 +126,86 @@ describe("EbConfigMapper", function () {
 		it("Should throw an error when it can't find a Stack", function (done) {
 			var ebConfig = new EbConfig(getEbMock());
 			ebConfig.getLatestSolutionStack("128bit Amazon Linux", "Nope")
-				.then(function() {
+				.then(function () {
 					//Shouldn't get here
 					assert.ok(false, "Invalid solution stack didn't throw an error");
 					done();
 				})
-				.catch(function(e) {
+				.catch(function (e) {
 					assert.ok(true);
 					done();
 				});
 		});
 
 	});
+
+	describe("getEbCreateConfig", function () {
+		it("Should error without Worker having sqsWorker config", function (done) {
+			var ebConfig = new EbConfig(getEbMock());
+			ebConfig.getEbCreateConfig(getConfigWorkerNoSqs())
+				.then(function () {
+					assert.ok(false, "Invalid config should throw an error");
+				})
+				.catch(function (e) {
+					assert.ok(true);
+					done();
+				})
+		});
+
+		it("Should error without Worker having sqsWorker config", function (done) {
+			var ebConfig = new EbConfig(getEbMock());
+
+			var config = getConfigWorker();
+
+
+			ebConfig.getEbCreateConfig(getConfigWorker())
+				.then(function () {
+					assert.ok(false, "Invalid config should throw an error");
+				})
+				.catch(function (e) {
+					assert.ok(true);
+					done();
+				})
+		})
+	});
 });
 
-function getEbConfigMapReal() {
-  return require('../../../../../config/eb-config-map.json');
+function getEbConfigMapReal () {
+	return require('../../../../../config/eb-config-map.json');
 }
 
-function getTiersMock() {
+function getTiersMock () {
 	return {
 		"WebServer": {
-			"Name":    "WebServer",
-			"Type":    "Standard",
+			"Name": "WebServer",
+			"Type": "Standard",
 			"Version": "1.0"
 		},
-		"Worker":    {
-			"Name":    "Worker",
-			"Type":    "SQS/HTTP",
+		"Worker": {
+			"Name": "Worker",
+			"Type": "SQS/HTTP",
 			"Version": "1.0"
 		}
 	};
 }
+
+function getConfigWorker () {
+	var config = require('./fixture/example-worker.json');
+	config.options.sqsWorker.sqsQueue = new SqsQueue({queueName: 'Hello World'});
+	return config;
+}
+
+function getConfigWorkerNoSqs () {
+	return require('./fixture/example-worker-nosqs.json');
+}
+
 
 /**
  * Gets an mock for the AWS EB service.
  *
  * @returns {{listAvailableSolutionStacks: Function}}
  */
-function getEbMock() {
+function getEbMock () {
 	return {
 		listAvailableSolutionStacks: function (callback) {
 			callback(null, {
