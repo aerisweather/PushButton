@@ -10,7 +10,7 @@ import SQS = AWS.SQS;
 
 class SqsQueue implements ResourceInterface {
   protected config:SqsQueueConfig;
-  protected queueUrl:string = null;
+  public queueUrl:string = null;
   protected sqs:SqsLifted;
 
   public constructor(config:SqsQueueConfig) {
