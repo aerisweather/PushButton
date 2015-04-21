@@ -3,9 +3,7 @@ import AWS = require('aws-sdk');
 import ResourceInterface = require('../../ResourceInterface');
 import EbAppVersionResult = require('./EbAppVersionResult');
 import when = require('when');
-import whenNodeLift = require('when/node');
-
-AWS.ElasticBeanstalk.createApplicationVersion = whenNodeLift.lift(AWS.ElasticBeanstalk.createApplicationVersion);
+import lift = require('../../../util/lift');
 
 /**
  * An ElasticBeanstalk App Version, app versions may be shared across ElasticBeanstalk environments.
@@ -14,10 +12,12 @@ class EbAppVersion implements ResourceInterface {
 
     resourceConfig:any;
     eb:AWS.ElasticBeanstalk;
+    createApplicationVersion:any;
 
     constructor(resourceConfig) {
         this.resourceConfig = resourceConfig;
         this.eb = new AWS.ElasticBeanstalk({region: this.resourceConfig.region});
+        this.createApplicationVersion = lift<any>(AWS.ElasticBeanstalk.prototype.createApplicationVersion, this.eb);
     }
 
     public deploy():when.Promise<EbAppVersionResult> {
