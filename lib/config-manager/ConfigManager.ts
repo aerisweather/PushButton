@@ -2,7 +2,7 @@
 import wire = require('wire');
 import when = require('when');
 import _ = require('lodash');
-import ResourceConfig = require('../resource/config/ResourceConfigInterface');
+import ResourceServiceConfig = require('./config/ResourceServiceConfigInterface');
 import ResourceCollectionConfig = require('../resource/config/ResourceCollectionConfigInterface');
 import Resource = require('../resource/ResourceInterface');
 import RunnerContext = require('context/RunnerContextInterface');
@@ -20,12 +20,12 @@ class ConfigManager {
     ];
   }
 
-  public wireResource(resourceConfig:ResourceConfig):When.Promise<Resource> {
+  public wireResource(serviceConfig:ResourceServiceConfig):When.Promise<Resource> {
     // Convert the resource config into a Wire.js `create` factory.
     // We assign it a unique key, so we can pluck it out later.
     var RESOURCE_KEY = _.uniqueId('RESOURCE_');
     var spec = <any>{};
-    spec[RESOURCE_KEY] = this.toFactorySpec(resourceConfig);
+    spec[RESOURCE_KEY] = this.toFactorySpec(serviceConfig);
 
 
     return this.wire<Wire.Factories.create, any>(spec).
@@ -33,7 +33,7 @@ class ConfigManager {
       // and add it to the parent context
       then((context) => {
         var resource = context[RESOURCE_KEY];
-        return this.addResource(resourceConfig.name, resource);
+        return this.addResource(serviceConfig.name, resource);
       });
   }
 
@@ -82,11 +82,11 @@ class ConfigManager {
     return wire<ResourceCollectionConfig, RunnerContext>(spec);
   }
 
-  protected toFactorySpec(resourceConfig:ResourceConfig):Wire.Factories.create {
+  protected toFactorySpec(serviceConfig:ResourceServiceConfig):Wire.Factories.create {
     return {
       create: {
-        module: this.resourceMap[resourceConfig.type],
-        args: [resourceConfig.config],
+        module: this.resourceMap[serviceConfig.type],
+        args: [serviceConfig.config],
         isConstructor: true
       }
     };

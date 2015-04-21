@@ -5,7 +5,7 @@ import ResourceCollectionConfig = require('./../resource/config/ResourceCollecti
 import Result = require('../resource/result/ResultInterface');
 import ResourceCollectionResult = require('../resource/result/ResourceCollectionResultInterface');
 import Resource = require('../resource/ResourceInterface');
-import ResourceConfig = require('../resource/config/ResourceConfigInterface');
+import ResourceServiceConfig = require('../config-manager/config/ResourceServiceConfigInterface');
 import defaultResourceMap = require('../../config/resource-map');
 import ConfigManager = require('../config-manager/ConfigManager');
 
@@ -38,16 +38,16 @@ class ResourceCollection implements Resource {
     // A set of PromiseFns,
     // each fn deploys a resource.
     var resourceDeployers = this.config.resources.
-      map((resourceConfig:ResourceConfig) =>
-        () => this.deployResourceConfig(resourceConfig));
+      map((serviceConfig:ResourceServiceConfig) =>
+        () => this.deployResourceConfig(serviceConfig));
 
     // Run each resource deployer, in order.
     return sequence<Result>(resourceDeployers);
   }
 
-  protected deployResourceConfig(resourceConfig:ResourceConfig):When.Promise<Result> {
+  protected deployResourceConfig(serviceConfig:ResourceServiceConfig):When.Promise<Result> {
     return this.configManager.
-      wireResource(resourceConfig).
+      wireResource(serviceConfig).
       then((resource:Resource) => resource.deploy());
   }
 
