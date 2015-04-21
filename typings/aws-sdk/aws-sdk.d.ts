@@ -1,5 +1,6 @@
 ///<reference path="../definitely-typed/node/node.d.ts" />
-declare module AWS {
+declare module 'AWS' {
+  import fs = require('fs');
   interface Callback<TData> {
     (err:Error, data:TData):void;
   }
@@ -25,7 +26,7 @@ declare module AWS {
       interface putObject {
         Bucket: string;
         Key: string;
-        Body: ReadStream;
+        Body: fs.ReadStream;
       }
     }
 
@@ -40,5 +41,6 @@ declare module AWS {
 }
 
 declare module 'aws-sdk' {
+  import AWS = require('AWS');
   export = AWS;
 }
