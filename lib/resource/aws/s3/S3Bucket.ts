@@ -14,8 +14,8 @@ class S3Bucket implements ResourceInterface {
   }
 
   /** Return the name of the S3 Bucket */
-  public getName() {
-    return this.config.name;
+  public getBucketName() {
+    return this.config.bucketName;
   }
 
   public deploy():When.Promise<BucketResult> {

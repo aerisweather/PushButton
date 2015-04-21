@@ -3,6 +3,6 @@ import ResourceConfigInterface = require('../../../config/ResourceConfigInterfac
 import FileProvider = require('../../../system/file/FileProviderInterface');
 
 interface S3BucketConfigInterface extends ResourceConfigInterface {
-  name: string;
+  bucketName: string;
 }
 export = S3BucketConfigInterface;

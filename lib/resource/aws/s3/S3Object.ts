@@ -23,7 +23,7 @@ class S3Object implements ResourceInterface {
     return this.getFileStream().
       then((fileStream) => {
         return putObject({
-          Bucket: this.getBucket().getName(),
+          Bucket: this.getBucket().getBucketName(),
           Key: this.config.key,
           Body: fileStream
         });
@@ -39,7 +39,7 @@ class S3Object implements ResourceInterface {
     // There's gotta be a safer way to get the actual object URL
     // using the S3 api, but I can't find it in the docs....
     return 'https://s3.amazonaws.com/{BUCKET_NAME}/{OBJECT_KEY}'.
-      replace('{BUCKET_NAME}', this.getBucket().getName()).
+      replace('{BUCKET_NAME}', this.getBucket().getBucketName()).
       replace('{OBJECT_KEY}', this.config.key);
   }
 
@@ -49,7 +49,7 @@ class S3Object implements ResourceInterface {
 
   public getSourceBundle():SourceBundle {
     return {
-      S3Bucket: this.getBucket().getName(),
+      S3Bucket: this.getBucket().getBucketName(),
       S3Key: this.getKey()
     };
   }
