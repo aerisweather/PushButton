@@ -1,6 +1,7 @@
 /// <reference path="../../typings/vendor.d.ts" />
 import when = require('when');
 import sequence = require('when/sequence');
+import _ = require('lodash');
 import ResourceCollectionConfig = require('./../resource/config/ResourceCollectionConfigInterface');
 import Result = require('../resource/result/ResultInterface');
 import ResourceCollectionResult = require('../resource/result/ResourceCollectionResultInterface');
@@ -25,7 +26,7 @@ class ResourceCollection implements Resource {
   public deploy():when.Promise<ResourceCollectionResult> {
     return this.configManager.
       wireParams(this.config.params || {}).
-      then(() => this.deployAllResources()).
+      then(() => this.deployAllServices()).
       then((results:Result[]) => {
         return {
           message: 'All resources have deployed successfully.',
@@ -34,21 +35,29 @@ class ResourceCollection implements Resource {
       });
   }
 
-  protected deployAllResources():When.Promise<Result[]> {
+  protected deployAllServices():When.Promise<Result[]> {
     // A set of PromiseFns,
     // each fn deploys a resource.
     var resourceDeployers = this.config.resources.
       map((serviceConfig:ResourceServiceConfig) =>
-        () => this.deployResourceConfig(serviceConfig));
+        () => this.deployService(serviceConfig));
 
     // Run each resource deployer, in order.
-    return sequence<Result>(resourceDeployers);
+    return sequence<Result[]>(resourceDeployers).
+      then((res) => _.flatten<Result>(res));
   }
 
-  protected deployResourceConfig(serviceConfig:ResourceServiceConfig):When.Promise<Result> {
+  protected deployService(serviceConfig:ResourceServiceConfig):When.Promise<Result[]> {
     return this.configManager.
       wireResource(serviceConfig).
-      then((resource:Resource) => resource.deploy());
+      then((resource:Resource) => {
+        var actions = serviceConfig.actions.
+          map((action:string) =>
+            () => resource[action]()
+        );
+
+        return sequence<Result>(actions);
+      });
   }
 
   /** Maps named resource services to Resource constructors. */
