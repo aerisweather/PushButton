@@ -27,7 +27,10 @@
       "commit": "52fa2b9ce36f2c5843204e9bfbaada7cded9b47a"
     },
     "debug/debug.d.ts": {
-      "commit": "52fa2b9ce36f2c5843204e9bfbaada7cded9b47a"
+      "commit": "cb08e83dd87ace1202d1032a8f275b3efacde5c3"
+    },
+    "fs-extra/fs-extra.d.ts": {
+      "commit": "cb08e83dd87ace1202d1032a8f275b3efacde5c3"
     }
   }
 }
