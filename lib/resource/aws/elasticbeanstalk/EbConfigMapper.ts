@@ -18,7 +18,7 @@ class EbConfigMapper {
     protected tierConfig:any;
     protected optionsConfigMap:any;
 
-    public construct(eb?:any, tierConfig?:any, optionsConfigMap?:any) {
+    public constructor(eb?:any, tierConfig?:any, optionsConfigMap?:any) {
         this.eb = eb;
 
         if (!tierConfig) {

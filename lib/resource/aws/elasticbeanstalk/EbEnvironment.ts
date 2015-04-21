@@ -28,9 +28,7 @@ class EbEnvironment implements ResourceInterface {
   }
 
   public deploy():when.Promise<EbResult> {
-    // HACK: Fixes TS compiler error, that I can't otherwise figure out
-    var EBC = <any>EbConfig;
-    var ebConfig:EbConfig = new EBC(this.eb);
+    var ebConfig:EbConfig = new EbConfig(this.eb);
 
     return ebConfig.getEbCreateConfig(this.resourceConfig)
       .then((createConfig) => {
