@@ -7,7 +7,7 @@ import EbConfig = require('../../../../../lib/resource/aws/elasticbeanstalk/EbCo
 import fs = require('fs-extra');
 import path = require('path');
 
-describe("EbConfigMapperTest", function () {
+describe("EbConfigMapper", function () {
 
 	describe("getTier", function () {
 		it("should get Worker tier", function () {
@@ -140,7 +140,7 @@ describe("EbConfigMapperTest", function () {
 });
 
 function getEbConfigMapReal() {
-	return fs.readJsonSync(path.join(__dirname, '..', '..', 'config', 'eb-config-map.json'));
+  return require('./fixture/example-a');
 }
 
 function getTiersMock() {
