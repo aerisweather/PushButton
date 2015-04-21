@@ -5,6 +5,7 @@ var SqsQueue = require('../lib/resource/aws/sqs/SqsQueue');
 var AppVersion = require('../lib/resource/aws/elasticbeanstalk/EbAppVersion');
 var EbEnvironment = require('../lib/resource/aws/elasticbeanstalk/EbEnvironment');
 
+var UNIQUE = Math.round(Math.random() * 1000);
 var fileProvider = new GitArchiveProvider({});
 var bucket = new S3Bucket({
   name: 'turbine-eb'
@@ -17,14 +18,14 @@ var s3Obj = new S3Object({
 var appVersion = new AppVersion({
   region: 'us-east-1',
   ApplicationName: 'PushButton Sandbox',
-  VersionLabel: 'Testing PushButton ' + new Date().getTime(),
+  VersionLabel: 'Testing PushButton ' + UNIQUE,
   Description: 'Testing at ' + new Date().toLocaleString(),
   s3Object: s3Obj
 });
 
 var sqsQueue = new SqsQueue({
   region: 'us-east-1',
-  queueName: 'push-button-2',
+  queueName: 'push-button-' + UNIQUE,
   attributes: {
     Policy: JSON.stringify({
       Statement: [
@@ -42,7 +43,7 @@ var sqsQueue = new SqsQueue({
 
 var ebEnvironment = new EbEnvironment({
   applicationName: 'PushButton Sandbox',
-  environmentName: 'push-button-2',
+  environmentName: 'push-button-' + UNIQUE,
   appVersion: appVersion,
   region: 'us-east-1',
   solutionStack: {
@@ -50,7 +51,7 @@ var ebEnvironment = new EbEnvironment({
     stack: 'PHP 5.5'
   },
   tier: 'WebServer',
-  cnamePrefix: 'push-button-' + new Date().getTime(),
+  cnamePrefix: 'push-button-' + UNIQUE,
   environmentVars: {
     FOO: 'BAR'
   }/*,
@@ -62,10 +63,6 @@ var ebEnvironment = new EbEnvironment({
    }*/
 });
 
-sqsQueue.deploy().
-  tap(logResult).
-  done(quit, fail);
-
 s3Obj.deploy().
   tap(logResult).
   then(function(res) {
@@ -74,22 +71,16 @@ s3Obj.deploy().
   tap(logResult).
   then(function(res) {
     return sqsQueue.deploy();
-  });
+  }).
+  tap(logResult).
   then(function(res) {
     return ebEnvironment.deploy();
   }).
   tap(logResult).
-  then(function(res) {
-    process.exit(0);
-  }).
-  tap(logResult).
-  catch(function(err) {
-    console.error(err);
-    process.exit(1);
-  });
+  done(quit, fail);
 
 function logResult(res) {
-  console.log(res);
+  console.log(res.message);
 }
 
 function quit() {
