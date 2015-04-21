@@ -1,6 +1,7 @@
 /// <reference path="../../../../typings/vendor.d.ts" />
 import AWS = require('aws-sdk');
 import ResourceInterface = require('../../ResourceInterface');
+import EbAppVersionConfig = require('./config/EbAppVersionConfigInterface');
 import EbAppVersionResult = require('./EbAppVersionResult');
 import when = require('when');
 import lift = require('../../../util/lift');
@@ -10,30 +11,31 @@ import lift = require('../../../util/lift');
  */
 class EbAppVersion implements ResourceInterface {
 
-    resourceConfig:any;
-    eb:AWS.ElasticBeanstalk;
-    createApplicationVersion:any;
+  protected resourceConfig:EbAppVersionConfig;
+  protected eb:AWS.ElasticBeanstalk;
+  protected createApplicationVersion:(params:any) => When.Promise<any>;
 
-    constructor(resourceConfig) {
-        this.resourceConfig = resourceConfig;
-        this.eb = new AWS.ElasticBeanstalk({region: this.resourceConfig.region});
-        this.createApplicationVersion = lift<any>(AWS.ElasticBeanstalk.prototype.createApplicationVersion, this.eb);
-    }
+  constructor(resourceConfig:EbAppVersionConfig) {
+    this.resourceConfig = resourceConfig;
+    this.eb = new AWS.ElasticBeanstalk({region: this.resourceConfig.region});
+    this.createApplicationVersion = lift<any>(AWS.ElasticBeanstalk.prototype.createApplicationVersion, this.eb);
+  }
 
-    public deploy():when.Promise<EbAppVersionResult> {
-        return this.createApplicationVersion({
-                ApplicationName: this.resourceConfig.ApplicationName,
-                VersionLabel: this.resourceConfig.VersionLabel,
-                Description: this.resourceConfig.Description,
-                SourceBundle: {
-                    S3Bucket: this.resourceConfig.s3AppBucket.getBucketName(),
-                    S3Key: this.resourceConfig.s3AppBucket.getKey()
-                }
-            })
-            .then(function () {
-                return new EbAppVersionResult(this.resourceConfig.VersionLabel);
-            });
-    }
+  public deploy():when.Promise<EbAppVersionResult> {
+    return this.createApplicationVersion({
+      ApplicationName: this.resourceConfig.ApplicationName,
+      VersionLabel: this.resourceConfig.VersionLabel,
+      Description: this.resourceConfig.Description,
+      SourceBundle: this.resourceConfig.s3Object.getSourceBundle()
+    })
+      .then(function () {
+        return new EbAppVersionResult(this.resourceConfig.VersionLabel);
+      });
+  }
+
+  public getVersionLabel():string {
+    return this.resourceConfig.VersionLabel;
+  }
 }
 
 export = EbAppVersion;

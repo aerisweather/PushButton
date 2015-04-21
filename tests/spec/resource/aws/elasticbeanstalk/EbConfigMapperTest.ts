@@ -1,18 +1,13 @@
-var _ = require('lodash'),
-	assert = require('assert'),
-	ConfigError = require('../../../lib/error/ConfigError'),
-	EbConfig = require('../../../lib/eb/EbConfig'),
-	fs = require('fs-extra'),
-	path = require('path');
+///<reference path="../../../../../typings/vendor.d.ts" />
 
-describe("EbConfigTest", function () {
-	beforeEach(function () {
+import _ = require('lodash');
+import assert = require('assert');
+import ConfigError = require('../../../../../lib/error/ConfigError');
+import EbConfig = require('../../../../../lib/resource/aws/elasticbeanstalk/EbConfigMapper');
+import fs = require('fs-extra');
+import path = require('path');
 
-	});
-
-	afterEach(function () {
-
-	});
+describe("EbConfigMapper", function () {
 
 	describe("getTier", function () {
 		it("should get Worker tier", function () {
@@ -145,7 +140,7 @@ describe("EbConfigTest", function () {
 });
 
 function getEbConfigMapReal() {
-	return fs.readJsonSync(path.join(__dirname, '..', '..', 'config', 'eb-config-map.json'));
+  return require('./fixture/example-a');
 }
 
 function getTiersMock() {
