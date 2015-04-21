@@ -200,6 +200,7 @@ class EbConfigMapper {
  * EBEnvironments need an SQS Worker if and only if they are a worker class. Validate that for us.
  */
 function handleSqsWorker (config:EbEnvironmentConfig):when.Promise<EbEnvironmentConfig> {
+  config.options || (config.options = {});
 	if (config.tier === "Worker") {
 		//Only check for SQS Dependency if we are an SQS Worker
 		if (!config.options.sqsWorker) {
