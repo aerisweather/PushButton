@@ -9,7 +9,8 @@ declare module 'AWS' {
     constructor(...params:any[]);
     createApplication(...params:any[]):any;
     createApplicationVersion(...params:any[]):any;
-    describeApplications(options:any, callback:{(err:string, data:any[])}):void;
+    describeApplications(options:any, callback:Callback<any>):void;
+    listAvailableSolutionStacks(callback:Callback<any>);
   }
 
   class S3 {
