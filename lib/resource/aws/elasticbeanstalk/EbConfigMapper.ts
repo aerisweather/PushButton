@@ -109,29 +109,29 @@ class EbConfigMapper {
     if (results === undefined) {
       results = [];
     }
-    for (var i in optionsConfig) {
-      if (optionsConfig.hasOwnProperty(i)) {
-        if (optionsConfig[i] instanceof Object) {
-          EbConfigMapper.getOptionsConfigMapped(optionsConfig[i], optionsConfigMap[i], results);
-        }
-        else {
-          if (optionsConfigMap[i]) {
-            var keyParts = optionsConfigMap[i].split('.');
-            var namespace = keyParts[0];
-            var optionName = keyParts[1];
-            var value = optionsConfig[i];
-            results.push({
-              Namespace: namespace,
-              OptionName: optionName,
-              Value: value
-            });
-          }
-          else {
-            throw new ConfigError('options -> ' + i, "Couldn't find map for option key " + i + ", are you sure this is a valid key for the options config?");
-          }
-        }
+
+    _.each(optionsConfig, (optionVal, key) => {
+      var mappedVal = optionsConfigMap[key];
+      if (_.isObject(optionVal)) {
+        EbConfigMapper.getOptionsConfigMapped(optionVal, mappedVal, results);
       }
-    }
+      else if (mappedVal) {
+        var keyParts = mappedVal.split('.');
+        var namespace = keyParts[0];
+        var optionName = keyParts[1];
+        results.push({
+          Namespace: namespace,
+          OptionName: optionName,
+          Value: <string>optionVal
+        });
+      }
+      else {
+        throw new ConfigError('options -> ' + key,
+          "Couldn't find map for option key " + key +
+          ", are you sure this is a valid key for the options config?");
+      }
+    });
+
     return results;
   }
 
