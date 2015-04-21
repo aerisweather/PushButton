@@ -78,12 +78,28 @@
           "os": "64bit Amazon Linux",
           "stack": "PHP 5.5"
         },
-        "tier": "Worker",
+        "tier": "WebServer",
         "cnamePrefix": {"$ref": "tmpl!push-button-{{params.version}}"},
         "environmentVars": {
           "FOO": "BAR",
           "SQS_QUEUE": {  "$ref": "resources.pb-queue.queueUrl" }
+        }
+      }
+    },
+    {
+      "type": "EbEnvironment",
+      "name": "pb-eb-worker",
+      "actions": ["deploy"],
+      "config": {
+        "applicationName": "PushButton Sandbox",
+        "environmentName": {"$ref": "tmpl!push-button-eng-{{params.version}}"},
+        "appVersion": {"$ref": "resources.pb-app-version"},
+        "region": {"$ref": "params.region"},
+        "solutionStack": {
+          "os": "64bit Amazon Linux",
+          "stack": "PHP 5.5"
         },
+        "tier": "Worker",
         "options": {
           "sqsWorker": {
             "sqsQueue": { "$ref": "resources.pb-queue" }
