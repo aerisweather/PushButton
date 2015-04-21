@@ -1,26 +1,45 @@
 /// <reference path="../../../../typings/vendor.d.ts" />
 
 import AWS = require('aws-sdk');
+import ConfigError = require('../../../error/ConfigError');
 import InvalidInputError = require('../../../error/InvalidInputError');
+import EbConfig = require('./EbConfig');
 import EbResult = require('./EbResult');
 import ResourceInterface = require('../../ResourceInterface');
 import when = require('when');
+import lift = require('../../../util/lift');
 
 /**
  * A single deployable elastic beanstalk environment.
  */
 class ElasticBeanstalk implements ResourceInterface {
 
-    config:any;
+    resourceConfig:any;
     eb:AWS.ElasticBeanstalk;
+    createEbEnvironment:any;
 
     constructor(resourceConfig) {
-        this.config = resourceConfig;
-        this.eb = new AWS.ElasticBeanstalk({region: this.config.region});
+        this.resourceConfig = resourceConfig;
+        if (this.resourceConfig.appVersion === undefined) {
+            throw new ConfigError('EB -> appVersion', 'An appVersion must be passed to an ElasticBeanstalk resource, this should reference an ElasticBeanstalk AppVersion resource.');
+        }
+        this.eb = new AWS.ElasticBeanstalk({region: this.resourceConfig.region});
+        this.createEbEnvironment = lift<any>(AWS.ElasticBeanstalk.prototype.createApplication, this.eb);
     }
 
-    public deploy():EbResult {
-        return new EbResult();
+    public deploy():when.Promise<EbResult> {
+
+        var ebConfig = new EbConfig(this.eb);
+
+        return ebConfig.getEbCreateConfig(this.resourceConfig.config)
+            .then(function (createConfig) {
+                //AppVersion referenced by this.resourceConfig.appVersion
+                createConfig.VersionLabel = this.resourceConfig.appVersion.versionLabel;
+                return this.createEbEnvironment(createConfig);
+            })
+            .then(function (createEnvironmentResult) {
+                return new EbResult();
+            });
     }
 
     public validateApplicationName(applicationName:string):when.Promise<boolean> {
@@ -53,3 +72,5 @@ class ElasticBeanstalk implements ResourceInterface {
         });
     }
 }
+
+export = ElasticBeanstalk;

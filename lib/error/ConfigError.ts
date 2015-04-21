@@ -3,7 +3,7 @@ import ErrorClass = require('./ErrorClass');
 
 class ConfigError extends ErrorClass {
 
-	constructor(configKey, message) {
+	constructor(configKey:string, message:string) {
 		super(message);
 		this.message = 'Config Error: ' + configKey + ":\n\t" + message;
 	}

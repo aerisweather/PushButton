@@ -17,16 +17,16 @@ class EbConfig {
     tierConfig:any;
     optionsConfigMap:any;
 
-    construct(eb:AWS.ElasticBeanstalk, tierConfig:any, optionsConfigMap:any) {
+    construct(eb:AWS.ElasticBeanstalk, tierConfig?:any, optionsConfigMap?:any) {
         this.eb = eb;
 
-        if (tierConfig === undefined) {
+        if (!tierConfig) {
             debug('No tierConfig supplied, loading from config dir.');
             tierConfig = fs.readJsonSync(path.join(__dirname, '..', '..', 'config', 'eb-config-tiers.json'));
         }
         this.tierConfig = tierConfig;
 
-        if (optionsConfigMap === undefined) {
+        if (!optionsConfigMap) {
             debug('No optionsConfigMap supplied, loading from config dir.');
             optionsConfigMap = fs.readJsonSync(path.join(__dirname, '..', '..', 'config', 'eb-config-map.json'));
         }
