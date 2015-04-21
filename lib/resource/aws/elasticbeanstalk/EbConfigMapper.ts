@@ -10,6 +10,7 @@ import when = require('when');
 import _ = require('lodash');
 import EbEnvironmentConfig = require('./config/EbEnvironmentConfigInterface');
 import SqsQueue = require('../sqs/SqsQueue');
+import EbParams = AWS.ElasticBeanstalk.Params
 
 var debug = debugMod('EbConfigMapper');
 
@@ -89,19 +90,22 @@ class EbConfigMapper {
 				optionsSettings = optionsSettings.concat(mappedOptions, rawOptions, envVars);
 
 
-				return {
-					"ApplicationName": config.applicationName,
-					"EnvironmentName": config.environmentName,
-					"Description": config.description,
-					"CNAMEPrefix": config.cnamePrefix,
-					"Tier": EbConfigMapper.getTier(config.tier, this.tierConfig),
-					"Tags": config.tags,
-					"TemplateName": config.templateName || null,
-					"SolutionStackName": solutionStackName,
-					"OptionSettings": optionsSettings
-				}
-			});
-	}
+        var ebParams:EbParams.createEnvironment = {
+          "ApplicationName": config.applicationName,
+          "EnvironmentName": config.environmentName,
+          "Description": config.description,
+          "CNAMEPrefix": config.cnamePrefix,
+          "Tier": EbConfigMapper.getTier(config.tier, this.tierConfig),
+          "Tags": config.tags,
+          "TemplateName": config.templateName || null,
+          "SolutionStackName": solutionStackName,
+          "OptionSettings": optionsSettings
+        };
+        // Remove null values
+        ebParams = _.pick<any, any>(ebParams, (val, key) => !_.isNull(val) && !_.isUndefined(val));
+        return <EbParams.createEnvironment>ebParams;
+      });
+  }
 
 	/**
 	 * Get Options Config, Mapped

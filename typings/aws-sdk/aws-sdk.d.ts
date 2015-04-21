@@ -75,6 +75,7 @@ declare module 'AWS' {
   }
 
   class SQS {
+    public constructor(params?:{ region: string });
     public createQueue(params:SQS.Params.createQueue, cb?:Callback<SQS.Response.createQueue>);
     public deleteQueue(params:any, cb?:Callback<any>);
     public getQueueUrl(params:any, cb?:Callback<any>);

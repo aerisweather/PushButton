@@ -3,6 +3,7 @@
 interface ResourceServiceConfigInterface {
   name: string;
   type: string;
-  config: Dictionary<string>;
+  actions: string[];
+  config: any;
 }
 export = ResourceServiceConfigInterface;

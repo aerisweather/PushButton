@@ -33,11 +33,13 @@ describe('ResourceCollection', () => {
           {
             name: 'fooService',
             type: 'Foo',
+            actions: ['deploy'],
             config: {}
           },
           {
             name: 'barService',
             type: 'Bar',
+            actions: ['deploy'],
             config: {}
           }
         ]
@@ -58,11 +60,13 @@ describe('ResourceCollection', () => {
           {
             name: 'fooService',
             type: 'Foo',
+            actions: ['deploy'],
             config: {}
           },
           {
             name: 'barService',
             type: 'Bar',
+            actions: ['deploy'],
             config: {}
           }
         ]
@@ -82,15 +86,17 @@ describe('ResourceCollection', () => {
           {
             name: 'fooService',
             type: 'Foo',
+            actions: ['deploy'],
             config: {
-              result: { foo: 'faz' }
+              result: {foo: 'faz'}
             }
           },
           {
             name: 'barService',
             type: 'Bar',
+            actions: ['deploy'],
             config: {
-              result: { bar: 'baz' }
+              result: {bar: 'baz'}
             }
           }
         ]
@@ -99,8 +105,36 @@ describe('ResourceCollection', () => {
 
       resourceCollection.deploy().
         then((result:ResourceCollectionResult) => {
-          assert(result.results[0].foo === 'faz', 'Should contain foo result');
-          assert(result.results[1].bar === 'baz', 'Should contain bar result');
+          assert(result.results[0]['foo'] === 'faz', 'Should contain foo result');
+          assert(result.results[1]['bar'] === 'baz', 'Should contain bar result');
+        }).
+        done(() => done(), done);
+    });
+
+    it('should run the specified actions against the resource', (done) => {
+      var resourceCollection = new ResourceCollection({
+        resources: [
+          {
+            name: 'fooService',
+            type: 'Foo',
+            actions: ['actionA', 'actionB'],
+            config: {
+              result: {foo: 'faz'}
+            }
+          }
+        ]
+      });
+      resourceCollection.setConfigManager(configManager);
+
+      fooService['actionA'] = sinon.expectation.create();
+      fooService['actionB'] = sinon.expectation.create();
+
+      resourceCollection.deploy().
+        then(() => {
+          assert(fooService['actionA'].called, 'Should have run actionA');
+          assert(fooService['actionB'].called, 'Should have run actionB');
+          assert(fooService['actionA'].calledBefore(fooService['actionB']),
+            'Should have run actions in order');
         }).
         done(() => done(), done);
     });
