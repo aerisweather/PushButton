@@ -18,7 +18,7 @@ class S3Bucket implements ResourceInterface {
     return this.config.bucketName;
   }
 
-  public deploy():When.Promise<BucketResult> {
+  public createResource():When.Promise<BucketResult> {
     return when({
       message: 'Bucket.deploy is not yet implemented'
     }).tap(() => {

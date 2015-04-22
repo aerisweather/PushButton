@@ -27,7 +27,7 @@ class EbEnvironment implements ResourceInterface {
     this.createEbEnvironment = lift<any>(this.eb.createEnvironment, this.eb);
   }
 
-  public deploy():when.Promise<EbResult> {
+  public createResource():when.Promise<EbResult> {
     var ebConfig:EbConfig = new EbConfig(this.eb);
 
     return ebConfig.getEbCreateConfig(this.resourceConfig)

@@ -18,7 +18,7 @@ class SqsQueue implements ResourceInterface {
     this.sqs = new SqsLifted({ region: config.region });
   }
 
-  public deploy():When.Promise<SqsQueueResult> {
+  public createResource():When.Promise<SqsQueueResult> {
     return this.sqs.createQueue({
       QueueName: this.config.queueName,
       Attributes: this.config.attributes || {}

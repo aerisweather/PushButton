@@ -8,7 +8,7 @@ import childProcess = require('child_process');
 class GitArchiveProvider implements FileProviderInterface {
   protected config:any;
 
-  public deploy():When.Promise<FileProviderResult> {
+  public createResource():When.Promise<FileProviderResult> {
     return when.promise<FileProviderResult>((resolve:Function, reject:Function) => {
       // Note that this will only archive the current working dir
       // More advanced git repo dir options should be implemented...

@@ -30,10 +30,10 @@ class ResourceCollection implements Resource {
     EventEmitter.call(this);
   }
 
-  public deploy():when.Promise<ResourceCollectionResult> {
+  public createResource():when.Promise<ResourceCollectionResult> {
     return this.configManager.
       wireParams(this.config.params || {}).
-      then(() => this.deployAllServices()).
+      then(() => this.createAllServices()).
       then((results:Result[]) => {
         return {
           message: 'All resources have deployed successfully.',
@@ -42,19 +42,19 @@ class ResourceCollection implements Resource {
       });
   }
 
-  protected deployAllServices():When.Promise<Result[]> {
+  protected createAllServices():When.Promise<Result[]> {
     // A set of PromiseFns,
     // each fn deploys a resource.
     var resourceDeployers = this.config.resources.
       map((serviceConfig:ResourceServiceConfig) =>
-        () => this.deployService(serviceConfig));
+        () => this.createService(serviceConfig));
 
     // Run each resource deployer, in order.
     return sequence<Result[]>(resourceDeployers).
       then((res) => _.flatten<Result>(res));
   }
 
-  protected deployService(serviceConfig:ResourceServiceConfig):When.Promise<Result[]> {
+  protected createService(serviceConfig:ResourceServiceConfig):When.Promise<Result[]> {
     return this.configManager.
       wireResource(serviceConfig).
       then((resource:Resource) => {

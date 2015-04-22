@@ -21,7 +21,7 @@ class EbAppVersion implements ResourceInterface {
     this.createApplicationVersion = lift<any>(this.eb.createApplicationVersion, this.eb);
   }
 
-  public deploy():when.Promise<EbAppVersionResult> {
+  public createResource():when.Promise<EbAppVersionResult> {
     return this.createApplicationVersion({
       ApplicationName: this.resourceConfig.ApplicationName,
       VersionLabel: this.resourceConfig.VersionLabel,

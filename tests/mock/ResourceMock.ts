@@ -4,12 +4,12 @@ import when = require('when');
 import ResourceInterface = require('../../lib/resource/ResourceInterface');
 
 class ResourceMock implements ResourceInterface {
-  public deploy:SinonExpectation;
+  public createResource:SinonExpectation;
   public config:any;
 
   public constructor(config:any = {}) {
-    this.deploy = sinon.expectation.create('deploy');
-    this.deploy.returns(when(config.result || {}));
+    this.createResource = sinon.expectation.create('deploy');
+    this.createResource.returns(when(config.result || {}));
     this.config = config;
   }
 

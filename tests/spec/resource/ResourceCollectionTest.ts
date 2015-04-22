@@ -46,10 +46,10 @@ describe('ResourceCollection', () => {
       });
       resourceCollection.setConfigManager(configManager);
 
-      resourceCollection.deploy().
+      resourceCollection.createResource().
         then(() => {
-          assert(fooService.deploy.called, "Should have deployed fooService");
-          assert(barService.deploy.called, "Should have deployed barService");
+          assert(fooService.createResource.called, "Should have deployed fooService");
+          assert(barService.createResource.called, "Should have deployed barService");
         }).
         done(() => done(), done);
     });
@@ -73,9 +73,9 @@ describe('ResourceCollection', () => {
       });
       resourceCollection.setConfigManager(configManager);
 
-      resourceCollection.deploy().
+      resourceCollection.createResource().
         then(() => {
-          assert(fooService.deploy.calledBefore(barService.deploy), "Should have deployed fooService before barService");
+          assert(fooService.createResource.calledBefore(barService.createResource), "Should have deployed fooService before barService");
         }).
         done(() => done(), done);
     });
@@ -103,7 +103,7 @@ describe('ResourceCollection', () => {
       });
       resourceCollection.setConfigManager(configManager);
 
-      resourceCollection.deploy().
+      resourceCollection.createResource().
         then((result:ResourceCollectionResult) => {
           assert(result.results[0]['foo'] === 'faz', 'Should contain foo result');
           assert(result.results[1]['bar'] === 'baz', 'Should contain bar result');
@@ -129,7 +129,7 @@ describe('ResourceCollection', () => {
       fooService['actionA'] = sinon.expectation.create();
       fooService['actionB'] = sinon.expectation.create();
 
-      resourceCollection.deploy().
+      resourceCollection.createResource().
         then(() => {
           assert(fooService['actionA'].called, 'Should have run actionA');
           assert(fooService['actionB'].called, 'Should have run actionB');

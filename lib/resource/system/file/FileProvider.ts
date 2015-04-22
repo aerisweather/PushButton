@@ -13,7 +13,7 @@ class FileProvider implements FileProviderInterface {
     this.config = config;
   }
 
-  public deploy():When.Promise<FileProviderResult> {
+  public createResource():When.Promise<FileProviderResult> {
     return when.promise<FileProviderResult>((resolve, reject) => {
       resolve({
         message: 'Created stream for file at ' + this.config.path,
