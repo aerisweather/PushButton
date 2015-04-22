@@ -31,6 +31,12 @@
     },
     "fs-extra/fs-extra.d.ts": {
       "commit": "cb08e83dd87ace1202d1032a8f275b3efacde5c3"
+    },
+    "glob/glob.d.ts": {
+      "commit": "25da006de5de3d2e31252fdc988296c7c212f231"
+    },
+    "minimatch/minimatch.d.ts": {
+      "commit": "25da006de5de3d2e31252fdc988296c7c212f231"
     }
   }
 }
