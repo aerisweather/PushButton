@@ -14,20 +14,17 @@ import events = require('events');
 var EventEmitter = events.EventEmitter;
 
 
-class ResourceCollection implements Resource {
+class ResourceCollection extends events.EventEmitter implements Resource {
   protected config:ResourceCollectionConfig;
 
   protected configManager:ConfigManager;
-  protected emit(event: string, ...args:any[]);
-  public on(event:string, cb:(...args:any[]) => void);
 
   constructor(config:ResourceCollectionConfig) {
+    super();
     this.config = config;
 
     this.configManager = new ConfigManager();
     this.configManager.setResourceMap(defaultResourceMap);
-
-    EventEmitter.call(this);
   }
 
   public createResource():when.Promise<ResourceCollectionResult> {
@@ -86,6 +83,5 @@ class ResourceCollection implements Resource {
     this.configManager = configManager;
   }
 }
-_.extend(ResourceCollection.prototype, EventEmitter.prototype);
 
 export = ResourceCollection;
