@@ -2,15 +2,12 @@
 
 import AdmiralCli = require('admiral-cli');
 import ConfigError = require('./lib/error/ConfigError');
-import Debug = require('debug');
 import fs = require('fs-extra');
 import glob = require('glob');
 import InvalidInputError = require('./lib/error/InvalidInputError');
 import path = require('path');
 import readline = require('readline');
 import ResourceCollection = require('./lib/resource/ResourceCollection');
-
-var debug = Debug('main');
 
 /*
  * Run Example:
