@@ -62,6 +62,8 @@ rl.question("What version are you deploying? (ex. v1.2.3) : ", function(answer) 
 	//Run!
 	rc.createResource().
 		done(quit, fail);
+
+	rl.close();
 });
 
 
