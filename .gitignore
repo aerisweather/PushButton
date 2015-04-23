@@ -7,3 +7,4 @@ lib/**/*.js
 tests/**/*.js
 config/**/*.js
 *.js.map
+index.js
