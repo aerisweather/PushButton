@@ -1,4 +1,4 @@
-declare module AdmiralCli {
+declare module Admiral {
 	class Cli {
 		constructor(...params:any[]);
 		commandGroup(...params:any[]):any;
@@ -27,5 +27,5 @@ declare module AdmiralCli {
 }
 
 declare module 'admiral-cli' {
-	export = AdmiralCli.Cli;
+	export = Admiral.Cli;
 }
