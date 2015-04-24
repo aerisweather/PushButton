@@ -6,7 +6,7 @@ var glob = require('glob');
 var InvalidInputError = require('../lib/error/InvalidInputError');
 var path = require('path');
 var debug = Debug('main');
-var cli = new AdmiralCli.Cli();
+var cli = new AdmiralCli();
 cli
     .commandGroup('command', 'What we are going to do with deployment', [
     new AdmiralCli.CliCommand('deploy', 'Deploy a new environment'),
