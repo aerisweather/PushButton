@@ -2,6 +2,7 @@
 import when = require('when');
 import readline = require('readline');
 import Readline = readline.ReadLine;
+import _ = require('lodash');
 
 interface FlagFinder {
   isNextArg: boolean;
