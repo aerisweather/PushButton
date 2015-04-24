@@ -11,8 +11,6 @@ import defaultResourceMap = require('../../config/resource-map');
 import ConfigManager = require('../config-manager/ConfigManager');
 import events = require('events');
 
-var EventEmitter = events.EventEmitter;
-
 
 class ResourceCollection extends events.EventEmitter implements Resource {
   protected config:ResourceCollectionConfig;
