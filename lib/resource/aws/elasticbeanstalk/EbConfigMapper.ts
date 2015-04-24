@@ -73,22 +73,7 @@ class EbConfigMapper {
 				handleSqsWorker(config);
 			})
 			.then((solutionStackName) => {
-				var optionsSettings = [];
-				var mappedOptions = [];
-				var rawOptions = [];
-				var envVars = [];
-
-				if (config.options) {
-					mappedOptions = EbConfigMapper.getOptionsConfigMapped(config.options, this.optionsConfigMap);
-				}
-				if (config.rawOptions) {
-					rawOptions = EbConfigMapper.getRawOptionsMapped(config.rawOptions);
-				}
-				if (config.environmentVars) {
-					envVars = EbConfigMapper.getEnvironmentVarsMapped(config.environmentVars);
-				}
-				optionsSettings = optionsSettings.concat(mappedOptions, rawOptions, envVars);
-
+				var optionsSettings = getAllOptions(config);
 
 				var ebParams:EbParams.createEnvironment = {
 					"ApplicationName": config.applicationName,
@@ -192,6 +177,24 @@ class EbConfigMapper {
 		}
 		return result;
 	}
+}
+
+function getAllOptions(config) {
+	var optionsSettings = [];
+	var mappedOptions = [];
+	var rawOptions = [];
+	var envVars = [];
+
+	if (config.options) {
+		mappedOptions = EbConfigMapper.getOptionsConfigMapped(config.options, this.optionsConfigMap);
+	}
+	if (config.rawOptions) {
+		rawOptions = EbConfigMapper.getRawOptionsMapped(config.rawOptions);
+	}
+	if (config.environmentVars) {
+		envVars = EbConfigMapper.getEnvironmentVarsMapped(config.environmentVars);
+	}
+	return optionsSettings.concat(mappedOptions, rawOptions, envVars);
 }
 
 /**
