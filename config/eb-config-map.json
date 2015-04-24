@@ -80,6 +80,13 @@
 			}
 		}
 	},
+	"healthCheck": {
+		"url": "aws:elasticbeanstalk:application.Application Healthcheck URL",
+		"interval": "aws:elb:healthcheck.Interval",
+		"timeout": "aws:elb:healthcheck.Timeout",
+		"healthyThreshold": "aws:elb:healthcheck.HealthyThreshold",
+		"unhealthyThreshold": "aws:elb:healthcheck.UnhealthyThreshold"
+	},
 	"phpContainer": {
 		"document_root": "aws:elasticbeanstalk:container:php:phpini.document_root",
 		"memory_limit": "aws:elasticbeanstalk:container:php:phpini.memory_limit",
