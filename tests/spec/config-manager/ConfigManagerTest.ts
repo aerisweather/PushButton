@@ -31,7 +31,8 @@ describe('ConfigManager', () => {
         configManager.wireResource({
           name: 'foo-service',
           type: 'Foo',
-          config: {foo: 'faz'}
+          config: {foo: 'faz'},
+          actions: []
         }).
           then((resource:ResourceMock) => {
             assert(resource === fooService, 'Expected to create barService');
@@ -47,7 +48,8 @@ describe('ConfigManager', () => {
         configManager.wireResource({
           name: 'foo-service',
           type: 'Foo',
-          config: {foo: 'faz'}
+          config: {foo: 'faz'},
+          actions: []
         }).
           then((fooService:ResourceMock) => {
             return configManager.wireResource({
@@ -56,7 +58,8 @@ describe('ConfigManager', () => {
               config: {
                 fooService: {$ref: 'resources.foo-service'},
                 fooServiceFooConfig: {$ref: 'resources.foo-service.config.foo'}
-              }
+              },
+              actions: []
             });
           }).
           then((barService:ResourceMock) => {
@@ -81,7 +84,8 @@ describe('ConfigManager', () => {
               type: 'Foo',
               config: {
                 foo: {$ref: 'params.paramA'}
-              }
+              },
+              actions: []
             })
           }).
           then((fooService:ResourceMock) => {
@@ -108,7 +112,8 @@ describe('ConfigManager', () => {
               type: 'Foo',
               config: {
                 foo: {$ref: 'tmpl!foo-{{params.paramA}}'}
-              }
+              },
+              actions: []
             })
           }).
           then((fooService:ResourceMock) => {
