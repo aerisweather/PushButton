@@ -17,7 +17,7 @@ class ResourceCollection extends events.EventEmitter implements Resource {
 
   protected configManager:ConfigManager;
 
-  constructor(config:ResourceCollectionConfig) {
+  constructor(config?:ResourceCollectionConfig) {
     super();
     this.config = config;
 
@@ -79,6 +79,14 @@ class ResourceCollection extends events.EventEmitter implements Resource {
 
   public setConfigManager(configManager:ConfigManager) {
     this.configManager = configManager;
+  }
+
+  public setConfig(config:ResourceCollectionConfig) {
+    this.config = config;
+  }
+
+  public getConfig():ResourceCollectionConfig {
+    return this.config;
   }
 }
 
