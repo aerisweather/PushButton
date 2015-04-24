@@ -33,13 +33,13 @@ describe('ResourceCollection', () => {
           {
             name: 'fooService',
             type: 'Foo',
-            actions: ['deploy'],
+            actions: ['createResource'],
             config: {}
           },
           {
             name: 'barService',
             type: 'Bar',
-            actions: ['deploy'],
+            actions: ['createResource'],
             config: {}
           }
         ]
@@ -60,13 +60,13 @@ describe('ResourceCollection', () => {
           {
             name: 'fooService',
             type: 'Foo',
-            actions: ['deploy'],
+            actions: ['createResource'],
             config: {}
           },
           {
             name: 'barService',
             type: 'Bar',
-            actions: ['deploy'],
+            actions: ['createResource'],
             config: {}
           }
         ]
@@ -86,7 +86,7 @@ describe('ResourceCollection', () => {
           {
             name: 'fooService',
             type: 'Foo',
-            actions: ['deploy'],
+            actions: ['createResource'],
             config: {
               result: {foo: 'faz'}
             }
@@ -94,7 +94,7 @@ describe('ResourceCollection', () => {
           {
             name: 'barService',
             type: 'Bar',
-            actions: ['deploy'],
+            actions: ['createResource'],
             config: {
               result: {bar: 'baz'}
             }
@@ -126,8 +126,8 @@ describe('ResourceCollection', () => {
       });
       resourceCollection.setConfigManager(configManager);
 
-      fooService['actionA'] = sinon.expectation.create();
-      fooService['actionB'] = sinon.expectation.create();
+      fooService['actionA'] = MockAction('actionA');
+      fooService['actionB'] = MockAction('actionB');
 
       resourceCollection.createResource().
         then(() => {
@@ -140,5 +140,12 @@ describe('ResourceCollection', () => {
     });
 
   });
+
+  function MockAction(name?:string) {
+    var action = sinon.expectation.create(name);
+    action.returns(when({}));
+
+    return action;
+  }
 
 });
