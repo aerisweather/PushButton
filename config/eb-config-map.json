@@ -67,7 +67,7 @@
 		"portProtocol": "aws:elb:loadbalancer.LoadBalancerPortProtocol",
 		"securePort": "aws:elb:loadbalancer.LoadBalancerHTTPSPort",
 		"securePortProtocol": "aws:elb:loadbalancer.LoadBalancerSSLPortProtocol",
-		"sslCert": "aws:elb:loadbalancer.SSLCertificateId",
+		"sslCertArn": "aws:elb:loadbalancer.SSLCertificateId",
 		"crossZone": "aws:elb:loadbalancer.CrossZone",
 		"advanced": {
 			"connectionDraining": {
