@@ -1,0 +1,15 @@
+#!/usr/bin/env node
+var PushButton = require('../lib/PushButton');
+
+new PushButton().run().
+  done(quit, fail);
+
+function quit() {
+  console.log('Deployment successful');
+  process.exit(0);
+}
+
+function fail(err) {
+  console.error(err.stack);
+  process.exit(1);
+}
