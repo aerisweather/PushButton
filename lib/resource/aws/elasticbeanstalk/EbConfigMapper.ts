@@ -44,22 +44,18 @@ class EbConfigMapper {
 	 * @returns {Promise<string>}
 	 */
 	public getLatestSolutionStack (os, solutionStackShortName):when.Promise<string> {
-		return when.promise<string>(function (resolve, reject) {
-			this.eb.listAvailableSolutionStacks(function (err, stackResult) {
-				if (err) {
-					return reject(err);
-				}
+		return this.eb.listAvailableSolutionStacks()
+			.then(function (stackResult) {
 				if (stackResult.SolutionStacks && stackResult.SolutionStacks.length) {
 					for (var i = 0; i < stackResult.SolutionStacks.length; i++) {
 						var solutionStackName = stackResult.SolutionStacks[i];
 						if (solutionStackName.indexOf(os) !== -1 && solutionStackName.indexOf(solutionStackShortName) !== -1) {
-							return resolve(solutionStackName);
+							return solutionStackName;
 						}
 					}
 				}
-				reject(new Error("Couldn't find a solution for the requested stack: " + os + " running " + solutionStackShortName));
+				throw new Error("Couldn't find a solution for the requested stack: " + os + " running " + solutionStackShortName);
 			});
-		}.bind(this));
 	}
 
 	/**
@@ -73,7 +69,7 @@ class EbConfigMapper {
 				handleSqsWorker(config);
 			})
 			.then((solutionStackName) => {
-				var optionsSettings = getAllOptions(config);
+				var optionsSettings = getAllOptions(config, this.optionsConfigMap);
 
 				var ebParams:EbParams.createEnvironment = {
 					"ApplicationName": config.applicationName,
@@ -179,14 +175,14 @@ class EbConfigMapper {
 	}
 }
 
-function getAllOptions(config) {
+function getAllOptions (config, optionsConfigMap) {
 	var optionsSettings = [];
 	var mappedOptions = [];
 	var rawOptions = [];
 	var envVars = [];
 
 	if (config.options) {
-		mappedOptions = EbConfigMapper.getOptionsConfigMapped(config.options, this.optionsConfigMap);
+		mappedOptions = EbConfigMapper.getOptionsConfigMapped(config.options, optionsConfigMap);
 	}
 	if (config.rawOptions) {
 		rawOptions = EbConfigMapper.getRawOptionsMapped(config.rawOptions);
@@ -203,7 +199,7 @@ function getAllOptions(config) {
  * EBEnvironments need an SQS Worker if and only if they are a worker class. Validate that for us.
  */
 function handleSqsWorker (config:EbEnvironmentConfig):when.Promise<EbEnvironmentConfig> {
-  config.options || (config.options = {});
+	config.options || (config.options = {});
 	if (config.tier === "Worker") {
 		//Only check for SQS Dependency if we are an SQS Worker
 		if (!config.options.sqsWorker) {
