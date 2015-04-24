@@ -1,3 +1,8 @@
+# v0.1.1
+
+* FIX: Fix npm script and dependencies, so that TypeScript stuff
+       is all compiled on post-install.
+
 # v0.1.0
 
 **Initial release of PushButton**
