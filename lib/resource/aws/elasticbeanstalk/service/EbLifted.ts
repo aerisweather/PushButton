@@ -8,6 +8,7 @@ class EbLifted {
 	public describeApplications:(...params:any[]) => any;
 	public describeEnvironments:(...params:any[]) => any;
 	public describeEnvironmentOptions:(...params:any[]) => any;
+	public listAvailableSolutionStacks;
 
 	constructor(ebConfig) {
 		this.eb = new AWS.ElasticBeanstalk(ebConfig);
@@ -16,6 +17,7 @@ class EbLifted {
 		this.describeApplications = lift<any>(this.eb.describeApplications, this.eb);
 		this.describeEnvironments = lift<any>(this.eb.describeEnvironments, this.eb);
 		this.describeEnvironmentOptions = lift<any>(this.eb.describeEnvironmentOptions, this.eb);
+		this.listAvailableSolutionStacks = lift<any>(this.eb.listAvailableSolutionStacks, this.eb);
 	}
 }
 

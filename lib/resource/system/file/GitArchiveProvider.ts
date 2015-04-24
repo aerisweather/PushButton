@@ -12,7 +12,7 @@ class GitArchiveProvider implements FileProviderInterface {
     return when.promise<FileProviderResult>((resolve:Function, reject:Function) => {
       // Note that this will only archive the current working dir
       // More advanced git repo dir options should be implemented...
-      var archive = childProcess.execSync('git archive --format=zip head', {
+      var archive = childProcess.execSync('git archive --format=zip HEAD', {
         cwd: process.cwd()
       });
 
