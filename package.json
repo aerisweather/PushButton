@@ -16,7 +16,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git@bitbucket.org:hamweather/push-button.git"
+    "url": "https://github.com/aerisweather/PushButton.git"
   },
   "license": "ISC",
   "dependencies": {
