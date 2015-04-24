@@ -10,18 +10,19 @@ import when = require('when');
 import _ = require('lodash');
 import EbEnvironmentConfig = require('./config/EbEnvironmentConfigInterface');
 import SqsQueue = require('../sqs/SqsQueue');
-import EbParams = AWS.ElasticBeanstalk.Params
+import EbParams = AWS.ElasticBeanstalk.Params;
+import EbLifted = require('./service/EbLifted');
 
 var debug = debugMod('EbConfigMapper');
 
 class EbConfigMapper {
 
-	protected eb:AWS.ElasticBeanstalk;
+	protected eb:EbLifted;
 	protected config:any;
 	protected tierConfig:any;
 	protected optionsConfigMap:any;
 
-	public constructor (eb?:any, tierConfig?:any, optionsConfigMap?:any) {
+	public constructor (eb?:EbLifted, tierConfig?:any, optionsConfigMap?:any) {
 		this.eb = eb;
 
 		if (!tierConfig) {
