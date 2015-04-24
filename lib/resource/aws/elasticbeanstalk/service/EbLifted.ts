@@ -10,7 +10,7 @@ class EbLifted {
 	public describeEnvironmentOptions:(...params:any[]) => any;
 	public listAvailableSolutionStacks;
 
-	constructor(ebConfig) {
+	constructor(ebConfig?:any) {
 		this.eb = new AWS.ElasticBeanstalk(ebConfig);
 
 		this.createEbEnvironment = lift<any>(this.eb.createEnvironment, this.eb);
