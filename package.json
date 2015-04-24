@@ -11,7 +11,7 @@
     "Seth Miller <seth@four43.com> (http://www.four43.com/)"
   ],
   "scripts": {
-    "prepublish": "./node_modules/.bin/tsd reinstall && ./node_modules/.bin/tsd rebundle && ./node_modules/.bin/tsc --module commonjs --target es5 $(find lib config tests -name *.ts)",
+    "prepublish": "./node_modules/.bin/tsd reinstall && ./node_modules/.bin/tsd rebundle && ./node_modules/.bin/tsc --module commonjs --target es5 $(find lib/ config/ tests/ -name *.ts)",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
