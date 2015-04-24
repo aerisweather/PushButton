@@ -85,7 +85,7 @@
 		"memory_limit": "aws:elasticbeanstalk:container:php:phpini.memory_limit",
 		"allow_url_fopen": "aws:elasticbeanstalk:container:php:phpini.allow_url_fopen",
 		"display_errors": "aws:elasticbeanstalk:container:php:phpini.display_errors",
-		"max_execution_options": "aws:elasticbeanstalk:container:php:phpini.max_execution_time",
+		"max_execution_time": "aws:elasticbeanstalk:container:php:phpini.max_execution_time",
 		"composer_options": "aws:elasticbeanstalk:container:php:phpini.composer_options"
 	},
 	"nodeJsContainer": {
