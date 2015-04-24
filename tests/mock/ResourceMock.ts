@@ -8,7 +8,7 @@ class ResourceMock implements ResourceInterface {
   public config:any;
 
   public constructor(config:any = {}) {
-    this.createResource = sinon.expectation.create('deploy');
+    this.createResource = sinon.expectation.create('createResource');
     this.createResource.returns(when(config.result || {}));
     this.config = config;
   }

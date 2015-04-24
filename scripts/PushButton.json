@@ -8,8 +8,7 @@
     {
       "param": "version",
       "description": "Application version",
-      "flag": "--appVersion",
-      "type": "string"
+      "flag": "--appVersion"
     }
   ],
   "resources": [

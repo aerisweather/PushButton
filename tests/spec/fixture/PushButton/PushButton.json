@@ -1,0 +1,17 @@
+{
+  "params": {
+    "myFileName": "PushButton.json"
+  },
+  "args": [
+    {
+      "param": "foo",
+      "flag": "--foo",
+      "description": "What the foo?"
+    }
+  ],
+  "resources": [
+    {
+      "name": "my-resource"
+    }
+  ]
+}
