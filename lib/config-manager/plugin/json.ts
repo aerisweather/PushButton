@@ -5,14 +5,10 @@ var plugin:Wire.PluginFactory = function(options) {
   return {
     resolvers: {
       json: function(resolver, refStr, refObj:{ json:any }, wire) {
-        var jsonObj = refObj.json;
 
-        try {
-          resolver.resolve(JSON.stringify(jsonObj));
-        }
-        catch (err) {
-          resolver.reject(err);
-        }
+        wire(refObj.json).
+          then((json:any) => resolver.resolve(JSON.stringify(json))).
+          catch((err:Error) => resolver.reject(err));
       }
     }
   }
