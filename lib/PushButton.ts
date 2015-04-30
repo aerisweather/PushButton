@@ -10,8 +10,10 @@ import _ = require('lodash');
 import PushButtonConfig = require('./config/PushButtonConfigInterface');
 import PushButtonArg = require('./config/PushButtonArgInterface');
 import ConfigManager = require('./config-manager/ConfigManager');
+import ResourceServiceConfig = require('./config-manager/config/ResourceServiceConfigInterface')
 import resourceMap = require('../config/resource-map');
 import Cli = require('./util/Cli');
+var readJsonSync = <any>fs.readJsonSync.bind(fs);         //  Fixes bad TS typing in fs.readJsonSync
 
 
 class PushButton {
@@ -36,13 +38,59 @@ class PushButton {
   protected loadConfig():PushButtonConfig {
     var configPath = this.cli.getFlaggedArg<string>('-c', '--config');
     var readJsonSync = <any>fs.readJsonSync.bind(fs);
+    var config:PushButtonConfig;
 
     if (!configPath) {
       // Look for config in current dir
       configPath = path.join(process.cwd(), 'PushButton.json');
     }
 
-    return readJsonSync(configPath);
+    config = readJsonSync(configPath);
+    return this.processConfig(config, path.dirname(configPath));
+  }
+
+  protected processConfig(config:PushButtonConfig, configBasePath:string) {
+    var importPaths:string[];
+    var imports:PushButtonConfig[];
+
+    // Set config defaults
+    function applyDefaults(config:any):PushButtonConfig {
+      return _.defaults<any, PushButtonConfig>(config, {
+        imports: [],
+        params: {},
+        args: [],
+        resources: []
+      });
+    }
+    applyDefaults(config);
+
+    // Import configs
+    importPaths = config.imports || [];
+    imports = importPaths.map<PushButtonConfig>((relPath:String) => {
+      var absPath = path.join(configBasePath, relPath);
+      var importedConfig = readJsonSync(absPath);
+      return applyDefaults(importedConfig);
+    });
+
+    imports.forEach((importedConfig:PushButtonConfig) => {
+      // extends params
+      config.params = _.merge(importedConfig.params, config.params);
+
+      // extend resources
+      importedConfig.resources.
+        forEach((resourceConfig:ResourceServiceConfig) => {
+          var mainConfigHasResource = !!_.findWhere(config.resources, {name: resourceConfig.name});
+          if (!mainConfigHasResource) {
+            config.resources.push(resourceConfig);
+          }
+        });
+
+      // Add args
+      importedConfig.args.
+        forEach((arg:PushButtonArg) => config.args.push(arg));
+    });
+
+    return config;
   }
 
   /** Returns a key-value hash of arg param values. */
