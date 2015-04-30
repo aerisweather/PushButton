@@ -39,7 +39,7 @@ class ResourceCollection extends events.EventEmitter implements Resource {
 
     imports.forEach((importedConfig:ResourceCollectionConfig) => {
       // extends params
-      config.params = _.extend(importedConfig.params, config.params);
+      config.params = _.merge(importedConfig.params, config.params);
 
       // extend resources
       importedConfig.resources.forEach((resourceConfig:ResourceServiceConfig) => {
