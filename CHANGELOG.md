@@ -1,3 +1,8 @@
+# v0.2.0
+
+* ADD: `imports` config. Allows you to import other PushButton configs.
+* FIX: 'json' plugin now resolves object references before stringifying objects.
+
 # v0.1.1
 
 * FIX: Fix npm script and dependencies, so that TypeScript stuff
