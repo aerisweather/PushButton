@@ -95,25 +95,38 @@ describe('ConfigManager', () => {
 
       });
 
-      it('should extend params', () => {
+      it('should deep extend params', (done) => {
         var configManager = new ConfigManager();
         configManager.setResourceMap(resourceMap);
 
         configManager.wireParams({
           foo: 'faz',
-          bar: 'baz'
+          bar: 'baz',
+          nested: {
+            foo: 'faz',
+            bar: 'baz'
+          }
         }).
           then((params:any) => {
             return configManager.wireParams({
               bar: 'rab',
-              rab: 'bar'
+              rab: 'bar',
+              nested: {
+                bar: 'rab',
+                rab: 'bar'
+              }
             });
           }).
           then((params:any) => {
             assert.equal(params.foo, 'faz', 'Should keep existing params');
             assert.equal(params.bar, 'rab', 'Should override with new params');
-            assert.eqaul(params.rab, 'bar', 'Should add new params');
-          });
+            assert.equal(params.rab, 'bar', 'Should add new params');
+
+            assert.equal(params.nested.foo, 'faz', 'Should keep existing nested params');
+            assert.equal(params.nested.bar, 'rab', 'Should override with new nested params');
+            assert.equal(params.nested.rab, 'bar', 'Should add new nested params');
+          }).
+          done(() => done(), done);
       });
 
       it('should create a resource using the tmpl plugin', (done) => {

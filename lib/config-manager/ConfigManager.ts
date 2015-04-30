@@ -43,7 +43,7 @@ class ConfigManager {
     return this.wire<any,any>(params).
       then((paramsCtx) => {
         return this.getContext().
-          then((context) => _.extend(context.params, paramsCtx));
+          then((context) => _.merge(context.params, paramsCtx));
       });
   }
 
