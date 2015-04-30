@@ -23,7 +23,7 @@ class ResourceCollection extends events.EventEmitter implements Resource {
 
   constructor(config?:ResourceCollectionConfig) {
     super();
-    this.config = this.processConfig(config || {});
+    this.config = config ? this.processConfig(config) : null;
 
     this.configManager = new ConfigManager();
     this.configManager.setResourceMap(defaultResourceMap);
