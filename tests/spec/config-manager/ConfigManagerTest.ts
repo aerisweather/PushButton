@@ -95,6 +95,27 @@ describe('ConfigManager', () => {
 
       });
 
+      it('should extend params', () => {
+        var configManager = new ConfigManager();
+        configManager.setResourceMap(resourceMap);
+
+        configManager.wireParams({
+          foo: 'faz',
+          bar: 'baz'
+        }).
+          then((params:any) => {
+            return configManager.wireParams({
+              bar: 'rab',
+              rab: 'bar'
+            });
+          }).
+          then((params:any) => {
+            assert.equal(params.foo, 'faz', 'Should keep existing params');
+            assert.equal(params.bar, 'rab', 'Should override with new params');
+            assert.eqaul(params.rab, 'bar', 'Should add new params');
+          });
+      });
+
       it('should create a resource using the tmpl plugin', (done) => {
         var configManager = new ConfigManager();
         configManager.setResourceMap(resourceMap);
