@@ -4,5 +4,7 @@ import PushButtonArg = require('./PushButtonArgInterface');
 
 interface PushButtonConfigInterface extends ResourceCollectionConfigInterface {
   args?:PushButtonArg[];
+  /** Paths to other configs to import */
+  imports?:string[]
 }
 export = PushButtonConfigInterface;
