@@ -204,7 +204,7 @@ function handleSqsWorker (config:EbEnvironmentConfig):when.Promise<EbEnvironment
 	if (config.tier === "Worker") {
 		//Only check for SQS Dependency if we are an SQS Worker
 		if (!config.options.sqsWorker) {
-			throw new ConfigError('EB.options.sqsWorker', "An ElasticBeanstalk Environment that is a Worker tier, needs configuration for it's SQS instance");
+      return;
 		}
 		if (!config.options.sqsWorker.sqsQueue || !(config.options.sqsWorker.sqsQueue instanceof SqsQueue)) {
 			throw new ConfigError('EB.options.sqsWorker.sqsQueue', "An ElasticBeanstalk Environment that is a Worker tier, needs an SqsQueue resource in EB.options.sqsWorker.sqsQueue");
