@@ -4,6 +4,10 @@ declare module When {
     (...any):When.Promise<TVal>;
   }
 
+  interface Predicate<TArg> {
+    (arg:TArg): boolean;
+  }
+
   /**
    * var sequence = require('when/sequence');
    *
@@ -20,7 +24,7 @@ declare module When {
    */
   function Sequence<TItemVal>(tasks:PromiseFn<TItemVal>[], ...args):When.Promise<TItemVal[]>;
 
-  function Poll<TResult>(task:PromiseFn<TResult>, interval:number, condition:PromiseFn<TResult>, initialDelay?:number);
+  function Poll<TResult>(task:PromiseFn<TResult>, interval:number, condition:Predicate<TResult>, initialDelay?:number);
 }
 
 import WhenSequence = When.Sequence;

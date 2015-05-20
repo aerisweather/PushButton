@@ -8,12 +8,12 @@ class SqsLifted {
 
   public createQueue:(params:SQS.Params.createQueue) => When.Promise<SQS.Response.createQueue>;
   public getQueueUrl:(params:{ QueueName: string }) => When.Promise<{ QueueUrl:string }>;
-  public addPermission(params:{
+  public addPermission:(params:{
     AWSAccountIds: string[];
     Actions: string[];
     Label: string;
     QueueUrl: string;
-  }, cb?:Callback<any>);
+  }, cb?:Function) => When.Promise<any>;
 
   constructor(sqsParams?:{ region: string }) {
     this.sqs = new SQS(sqsParams);
