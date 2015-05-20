@@ -10,7 +10,6 @@ import SQS = AWS.SQS;
 
 class SqsQueue implements ResourceInterface {
   protected config:SqsQueueConfig;
-  public queueUrl:string = null;
   protected sqs:SqsLifted;
 
   public constructor(config:SqsQueueConfig) {
@@ -35,6 +34,14 @@ class SqsQueue implements ResourceInterface {
       });
   }
 
+  get queueUrl() {
+    return this.config.queueUrl;
+  }
+
+  set queueUrl(queueUrl:string) {
+    this.config.queueUrl = queueUrl;
+  }
+
   public getQueueUrl():When.Promise<string> {
     if (this.queueUrl !== null) {
       return when(this.queueUrl);
@@ -44,7 +51,20 @@ class SqsQueue implements ResourceInterface {
       getQueueUrl({
         QueueName: this.config.queueName
       }).
-      then((data) => data.QueueUrl);
+      then((data) => data.QueueUrl).
+      tap((queueUrl) => this.queueUrl = queueUrl);
+  }
+
+  public addPermission(permission: { principals: string[]; actions: string[]; label?: string; }):When.Promise<any> {
+    return this.getQueueUrl().
+      then((queueUrl) => {
+        return this.sqs.addPermission({
+          AWSAccountIds: permission.principals,
+          Actions: permission.actions,
+          Label: permission.label ||   _.uniqueId('QUEUE_PERMISSION_'),
+          QueueUrl: queueUrl
+        });
+      });
   }
 
 }

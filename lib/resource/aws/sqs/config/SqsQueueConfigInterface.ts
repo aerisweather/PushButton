@@ -4,7 +4,8 @@ import AWS = require('aws-sdk');
 
 interface SqsQueueConfigInterface extends ResourceConfigInterface {
   region: string;
-  queueName: string;
+  queueName?: string;
+  queueUrl?: string;
   /** Attributes to pass to SQS.createQueue */
   attributes?: AWS.SQS.QueueAttributes;
 }
