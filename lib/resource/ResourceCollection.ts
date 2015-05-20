@@ -10,6 +10,7 @@ import ResourceServiceConfig = require('../config-manager/config/ResourceService
 import defaultResourceMap = require('../../config/resource-map');
 import ConfigManager = require('../config-manager/ConfigManager');
 import events = require('events');
+import RunnerContext = require('../config-manager/context/RunnerContextInterface');
 
 
 class ResourceCollection extends events.EventEmitter implements Resource {
@@ -87,6 +88,10 @@ class ResourceCollection extends events.EventEmitter implements Resource {
 
   public getConfig():ResourceCollectionConfig {
     return this.config;
+  }
+
+  public getContext():When.Promise<RunnerContext> {
+    return this.configManager.getContext();
   }
 }
 
