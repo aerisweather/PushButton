@@ -19,10 +19,17 @@ declare module When {
    * promise will reject when any task throws or returns a rejection.
    */
   function Sequence<TItemVal>(tasks:PromiseFn<TItemVal>[], ...args):When.Promise<TItemVal[]>;
+
+  function Poll<TResult>(task:PromiseFn<TResult>, interval:number, condition:PromiseFn<TResult>, initialDelay?:number);
 }
 
 import WhenSequence = When.Sequence;
+import WhenPoll = When.Poll;
 
 declare module 'when/sequence' {
   export = WhenSequence;
+}
+
+declare module 'when/poll' {
+  export = WhenPoll;
 }
