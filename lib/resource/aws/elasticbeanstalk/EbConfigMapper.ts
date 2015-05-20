@@ -200,27 +200,28 @@ function getAllOptions (config, optionsConfigMap) {
  * EBEnvironments need an SQS Worker if and only if they are a worker class. Validate that for us.
  */
 function handleSqsWorker (config:EbEnvironmentConfig):when.Promise<EbEnvironmentConfig> {
-	config.options || (config.options = {});
-	if (config.tier === "Worker") {
-		//Only check for SQS Dependency if we are an SQS Worker
-		if (!config.options.sqsWorker) {
-      return;
-		}
-		if (!config.options.sqsWorker.sqsQueue || !(config.options.sqsWorker.sqsQueue instanceof SqsQueue)) {
-			throw new ConfigError('EB.options.sqsWorker.sqsQueue', "An ElasticBeanstalk Environment that is a Worker tier, needs an SqsQueue resource in EB.options.sqsWorker.sqsQueue");
-		}
-		var sqsQueue = config.options.sqsWorker.sqsQueue;
-		return sqsQueue.getQueueUrl()
-			.then((queueUrl) => {
-				//Remove the reference, we can't map sqsQueue to anything directly, so we will map it ourselves.
+  var hasSqsQueueResource = config.options.sqsWorker && config.options.sqsWorker.sqsQueue;
+
+  config.options || (config.options = {});
+
+  // Only worker environments may configure an sqs queue
+  if (config.options.sqsWorker && config.tier !== "Worker") {
+    throw new ConfigError('EB.options.sqsWorker', "An ElasticBeanstalk Environment that is NOT a worker tier has options.sqsWorker, this should be removed");
+  }
+
+	if (hasSqsQueueResource) {
+    // Set the Worker Environement sqsQueue,
+    // as configured.
+		return config.options.sqsWorker.sqsQueue.
+      getQueueUrl().
+			then((queueUrl) => {
 				delete config.options.sqsWorker.sqsQueue;
 				config.options.sqsWorker.queueUrl = queueUrl;
+
 				return config;
 			});
 	}
-	else if (config.options.sqsWorker) {
-		throw new ConfigError('EB.options.sqsWorker', "An ElasticBeanstalk Environment that is NOT a worker tier has options.sqsWorker, this should be removed");
-	}
+
 	return when(config);
 }
 export = EbConfigMapper;
