@@ -13,7 +13,9 @@ declare module 'AWS' {
 		describeApplications (options:any, callback:Callback<any>):void;
 		describeEnvironments (params:any[], callback:Callback<any>):void;
 		describeEnvironmentOptions(params:any[], callback:Callback<any>):void;
+		describeEnvironmentResources(params:any[], callback:Callback<any>):void;
 		listAvailableSolutionStacks (callback:Callback<any>);
+    updateEnvironment(params:any, callback:Callback<any>);
 	}
 
 	module ElasticBeanstalk {
@@ -78,6 +80,12 @@ declare module 'AWS' {
 
 	class SQS {
 		public constructor (params?:{ region: string });
+    public addPermission(params:{
+      AWSAccountIds: string[];
+      Actions: string[];
+      Label: string;
+      QueueUrl: string;
+    }, cb?:Callback<any>);
 		public createQueue (params:SQS.Params.createQueue, cb?:Callback<SQS.Response.createQueue>);
 		public deleteQueue (params:any, cb?:Callback<any>);
 		public getQueueUrl (params:any, cb?:Callback<any>);

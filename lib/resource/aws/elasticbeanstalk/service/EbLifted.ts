@@ -8,6 +8,8 @@ class EbLifted {
 	public describeApplications:(...params:any[]) => any;
 	public describeEnvironments:(...params:any[]) => any;
 	public describeEnvironmentOptions:(...params:any[]) => any;
+  public describeEnvironmentResources:(...params:any[]) => any;
+  public updateEnvironment:(...params:any[]) => any;
 	public listAvailableSolutionStacks;
 
 	constructor(ebConfig?:any) {
@@ -17,6 +19,8 @@ class EbLifted {
 		this.describeApplications = lift<any>(this.eb.describeApplications, this.eb);
 		this.describeEnvironments = lift<any>(this.eb.describeEnvironments, this.eb);
 		this.describeEnvironmentOptions = lift<any>(this.eb.describeEnvironmentOptions, this.eb);
+		this.describeEnvironmentResources = lift<any>(this.eb.describeEnvironmentResources, this.eb);
+		this.updateEnvironment = lift<any>(this.eb.updateEnvironment, this.eb);
 		this.listAvailableSolutionStacks = lift<any>(this.eb.listAvailableSolutionStacks, this.eb);
 	}
 }
