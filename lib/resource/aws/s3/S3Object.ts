@@ -8,6 +8,7 @@ import Bucket = require('./S3Bucket');
 import lift = require('../../../util/lift');
 import AWS = require('aws-sdk');
 import fs = require('fs');
+import Logger = require('../../../util/Logger');
 
 class S3Object implements ResourceInterface {
 	protected config:ObjectConfig;
@@ -17,17 +18,28 @@ class S3Object implements ResourceInterface {
 	}
 
 	public createResource ():When.Promise<ObjectResult> {
-		var s3 = new AWS.S3();
-		var putObject = lift<any>(s3.putObject, s3);
 
 		return this.getFileStream().
 			then((fileStream) => {
-				return putObject({
-					Bucket: this.getBucket().getBucketName(),
-					Key: this.config.key,
-					Body: fileStream
-				});
+        var s3 = new AWS.S3();
+        var objectParams = {
+          Bucket: this.getBucket().getBucketName(),
+          Key: this.config.key,
+          Body: fileStream
+        };
+        var managedUpload = s3.upload(objectParams);
+        var sendUpload = lift<any>(managedUpload.send, managedUpload);
+        var objectPath = 's3:/' + '/' + [objectParams.Bucket, objectParams.Key].join('/');
+
+        Logger.trace('S3: Uploading to ' + objectPath + '...');
+
+        managedUpload.on('httpUploadProgress', (progress:{loaded:number; total?:number;}) => {
+          Logger.trace(progress.loaded + ' out of ' + progress.total + ' bytes uploaded...');
+        });
+
+        return sendUpload();
 			}).
+      tap(() => Logger.trace('S3: Upload complete')).
 			then((data:AWS.S3.Response.putObject) => {
 				return {
 					message: 'Succesfully uploaded S3 Object to ' + this.getUrl()
