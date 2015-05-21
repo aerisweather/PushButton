@@ -58,14 +58,18 @@ declare module 'AWS' {
 		public listBuckets (params:any, cb?:Callback<any>);
 		public listObjects (params:any, cb?:Callback<any>);
 		public putObject (params:S3.Params.putObject, cb?:Callback<S3.Response.putObject>);
+    public upload(params:S3.Params.ObjectDescription, cb?:Callback<any>):S3.ManagedUpload;
 	}
 
 	module S3 {
 		module Params {
-			interface putObject {
-				Bucket: string;
-				Key: string;
-				Body: fs.ReadStream;
+      interface ObjectDescription {
+        Bucket: string;
+        Key: string;
+        Body: fs.ReadStream;
+      }
+
+      interface putObject extends ObjectDescription {
 			}
 		}
 
@@ -76,6 +80,11 @@ declare module 'AWS' {
 				VersionId: string;
 			}
 		}
+
+    export interface ManagedUpload extends NodeJS.EventEmitter {
+      abort():void;
+      send(cb:Callback<any>):void;
+    }
 	}
 
 	class SQS {
@@ -120,6 +129,10 @@ declare module 'AWS' {
 			}
 		}
 	}
+
+  export interface Request extends NodeJS.EventEmitter {
+
+  }
 }
 
 declare module 'aws-sdk' {
