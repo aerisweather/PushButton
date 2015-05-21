@@ -1,3 +1,14 @@
+# v0.3.0
+
+* ADD: EbEnvironment#waitUntilReady()
+* ADD: EbEnvironment#getQueue()
+* ADD: EbEnvironment#updateEventVariables()
+* ADD: Logger utility
+* ADD: Trace logs for several resources
+* MOD: EB worker environments no longer require SQS Queue config
+* MOD: S3Object uses a ManagedUpload, and logs progress
+
+
 # v0.2.0
 
 * ADD: `imports` config. Allows you to import other PushButton configs.
