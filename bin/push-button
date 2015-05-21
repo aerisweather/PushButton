@@ -1,5 +1,10 @@
 #!/usr/bin/env node
 var PushButton = require('../lib/PushButton');
+var Logger = require('../lib/util/Logger');
+
+Logger.handleLog(function(msg) {
+  console.log(msg);
+}, Logger.TRACE);
 
 new PushButton().run().
   done(quit, fail);
