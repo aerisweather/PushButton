@@ -100,7 +100,14 @@ declare module 'AWS' {
 		public listQueues (params:any, cb?:Callback<any>);
 		public purgeQueue (params:any, cb?:Callback<any>);
 		public sendMessage (params:any, cb?:Callback<any>);
-		public setQueueAttributes (params:any, cb?:Callback<any>);
+		public setQueueAttributes (params:{
+      QueueUrl: string;
+      Attributes: SQS.QueueAttributes;
+    }, cb?:Callback<any>);
+    public getQueueAttributes(params: {
+      QueueUrl: string;
+      AttributeNames: string[];
+    }, cb?:Callback<any>);
 	}
 
 	module SQS {
@@ -126,6 +133,20 @@ declare module 'AWS' {
 				QueueUrl: string;
 			}
 		}
+
+    interface Policy {
+      Id: string;
+      Statement: PolicyStatement[];
+    }
+
+    interface PolicyStatement {
+      Effect: string;
+      Action: string;
+      Principal: {
+        AWS: string;
+      };
+      Resource: string;
+    }
 	}
 
   export interface Request extends NodeJS.EventEmitter {
