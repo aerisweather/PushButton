@@ -34,5 +34,9 @@ class Logger {
     Logger.emitter.on(level, cb);
   }
 
+  public static pp(obj:any) {
+    return JSON.stringify(obj, null, 2);
+  }
+
 }
 export = Logger;
