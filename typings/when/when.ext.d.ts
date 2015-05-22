@@ -25,10 +25,15 @@ declare module When {
   function Sequence<TItemVal>(tasks:PromiseFn<TItemVal>[], ...args):When.Promise<TItemVal[]>;
 
   function Poll<TResult>(task:PromiseFn<TResult>, interval:number, condition:Predicate<TResult>, initialDelay?:number);
+
+  class Keys {
+    static all(obj:any):When.Promise<any>;
+  }
 }
 
 import WhenSequence = When.Sequence;
 import WhenPoll = When.Poll;
+import WhenKeys = When.Keys;
 
 declare module 'when/sequence' {
   export = WhenSequence;
@@ -36,4 +41,8 @@ declare module 'when/sequence' {
 
 declare module 'when/poll' {
   export = WhenPoll;
+}
+
+declare module 'when/keys' {
+  export = WhenKeys;
 }
