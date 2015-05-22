@@ -1,6 +1,6 @@
 {
   "name": "push-button",
-  "version": "0.3.0",
+  "version": "0.4.0",
   "description": "Configurable deployments, with support for AWS and ElasticBeanstalk",
   "main": "./lib/PushButton.js",
   "bin": {
