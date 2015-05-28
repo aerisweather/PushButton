@@ -9,6 +9,7 @@ import lift = require('../../../util/lift');
 import AWS = require('aws-sdk');
 import fs = require('fs');
 import Logger = require('../../../util/Logger');
+import _ = require('lodash');
 
 class S3Object implements ResourceInterface {
 	protected config:ObjectConfig;
@@ -33,9 +34,11 @@ class S3Object implements ResourceInterface {
 
         Logger.trace('S3: Uploading to ' + objectPath + '...');
 
-        managedUpload.on('httpUploadProgress', (progress:{loaded:number; total?:number;}) => {
+        let logProgress = _.throttle((progress:{loaded:number; total?:number;}) => {
           Logger.trace(progress.loaded + ' out of ' + progress.total + ' bytes uploaded...');
-        });
+        }, 500);
+
+        managedUpload.on('httpUploadProgress', logProgress);
 
         return sendUpload();
 			}).
