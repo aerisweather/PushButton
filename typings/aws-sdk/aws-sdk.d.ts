@@ -5,6 +5,10 @@ declare module 'AWS' {
 		(err:Error, data:TData):void;
 	}
 
+	class CloudWatch {
+		public putMetricAlarm (params:any, cb?:Callback<any>);
+	}
+
 	class ElasticBeanstalk {
 		constructor (...params:any[]);
 		createApplication (...params:any[]):any;
