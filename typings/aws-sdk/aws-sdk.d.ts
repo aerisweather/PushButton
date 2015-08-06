@@ -13,7 +13,7 @@ declare module 'AWS' {
 		describeApplications (options:any, callback:Callback<any>):void;
 		describeEnvironments (params:any[], callback:Callback<any>):void;
 		describeEnvironmentOptions(params:any[], callback:Callback<any>):void;
-		listAvailableSolutionStacks (callback:Callback<any>);
+		listAvailableSolutionStacks (...params:any[]);
 	}
 
 	module ElasticBeanstalk {
