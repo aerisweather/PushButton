@@ -62,7 +62,7 @@ declare module 'AWS' {
 		public listBuckets (params:any, cb?:Callback<any>);
 		public listObjects (params:any, cb?:Callback<any>);
 		public putObject (params:S3.Params.putObject, cb?:Callback<S3.Response.putObject>);
-		public upload (params:any);
+		public upload (params:S3.Params.putObject);
 	}
 
 	module S3 {
@@ -104,6 +104,10 @@ declare module 'AWS' {
 			Policy?: string;
 			ReceiveMessageWaitTimeseconds?: string;
 			VisibilityTimeout?: string;
+		}
+
+		interface Policy {
+			Statement:any;
 		}
 
 		module Params {
