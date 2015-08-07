@@ -62,6 +62,7 @@ declare module 'AWS' {
 		public listBuckets (params:any, cb?:Callback<any>);
 		public listObjects (params:any, cb?:Callback<any>);
 		public putObject (params:S3.Params.putObject, cb?:Callback<S3.Response.putObject>);
+		public upload (params:any);
 	}
 
 	module S3 {
