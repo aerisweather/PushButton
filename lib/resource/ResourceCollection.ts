@@ -60,6 +60,7 @@ class ResourceCollection extends events.EventEmitter implements Resource {
               return resource[action]().
                 tap((result) => {
                   this.emit('deploy', result, resource);
+                  return this.configManager.addResult(serviceConfig.name, action, result);
                 }).
                 catch((err:Error) => {
                   this.emit('error', err, resource);
