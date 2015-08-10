@@ -69,6 +69,10 @@ class CloudWatchMetric implements ResourceInterface {
         return {
           message: 'Successfully created CloudWatchMetric as ' + this.getName()
         };
+      })
+      .catch(function (err) {
+        console.error(err);
+        throw err;
       });
   }
 }

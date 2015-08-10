@@ -21,6 +21,7 @@ interface CloudWatchMetricConfigInterface extends ResourceConfigInterface {
    * @see http://docs.aws.amazon.com/AmazonCloudWatch/latest/DeveloperGuide/CW_Support_For_AWS.html
    */
   metricName: string;
+  dimensions: any[];
 
   evaluationPeriods: number;
   period: number;
@@ -32,8 +33,7 @@ interface CloudWatchMetricConfigInterface extends ResourceConfigInterface {
 
   actionsEnabled: boolean;
   alarmActions: string[];
-  dimensions: any[];
-  insufficientDataActions: string[];
   okActions: string[];
+  insufficientDataActions: string[];
 }
 export = CloudWatchMetricConfigInterface;
