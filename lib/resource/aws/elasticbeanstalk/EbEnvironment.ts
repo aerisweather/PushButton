@@ -19,6 +19,7 @@ import Logger = require('../../../util/Logger');
 class EbEnvironment implements ResourceInterface {
 	protected resourceConfig:EbEnvironmentConfig;
 	protected eb:EbLifted;
+	protected resultData:any;
 
 	constructor (resourceConfig:EbEnvironmentConfig) {
 		this.resourceConfig = resourceConfig;
@@ -46,6 +47,11 @@ class EbEnvironment implements ResourceInterface {
         return this.eb.createEbEnvironment(createConfig);
 			})
 			.then((createEnvironmentResult) => {
+				if(this.resourceConfig.waitUntilReady) {
+					return this.
+						waitUntilReady().
+						then(() => new EbResult('Created elastic beanstalk instance', this.resultData));
+				}
 				return new EbResult();
 			});
 	}
@@ -77,7 +83,10 @@ class EbEnvironment implements ResourceInterface {
 
     return poll<any>(describeEnvironment, SECOND * 10, isReady).
       timeout(MINUTE * 15).
-      then(() => this);
+      then((envResult) => {
+				this.resultData = envResult;
+				return this;
+			});
   }
 
   public getQueue():When.Promise<SqsQueue> {

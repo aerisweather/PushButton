@@ -9,6 +9,7 @@ interface EbEnvironmentConfigInterface extends ResourceConfigInterface {
     environmentName: string;
     appVersion: EbAppVersion;
     region: string;
+    waitUntilReady: boolean;
     solutionStack: {
         os: string;
         stack: string;
