@@ -44,11 +44,11 @@ class CloudWatchMetric implements ResourceInterface {
     }
   }
 
-  public createResource ():When.Promise<CloudWatchMetricResult> {
-    var cloudWatch = new AWS.CloudWatch();
-    var putObject = lift<any>(cloudWatch.putMetricAlarm, cloudWatch);
+  public createResource ():When.Promise<any> {
+    var cloudWatch = new AWS.CloudWatch({ region: this.config.region });
+    var putMetricAlarm = lift<any>(cloudWatch.putMetricAlarm, cloudWatch);
 
-    return cloudWatch.putMetricAlarm({
+    return putMetricAlarm({
       AlarmName: this.getName(),
       ComparisonOperator: this.getComparisonOperatorString(),
       EvaluationPeriods: this.config.evaluationPeriods,
@@ -58,11 +58,11 @@ class CloudWatchMetric implements ResourceInterface {
       Statistic: capitalizeFirstLetter(this.config.statistic),
       Threshold: this.config.threshold,
       ActionsEnabled: this.config.actionsEnabled,
-      AlarmActions: this.config.alarmActions,
+      AlarmActions: this.config.alarmActions || [],
       AlarmDescription: this.config.description,
       Dimensions: this.config.dimensions,
-      InsufficientDataActions: this.config.insufficientDataActions,
-      OKActions: this.config.okActions,
+      InsufficientDataActions: this.config.insufficientDataActions || [],
+      OKActions: this.config.okActions || [],
       Unit: this.config.unit
     })
       .then((data:AWS.S3.Response.putObject) => {
@@ -72,6 +72,7 @@ class CloudWatchMetric implements ResourceInterface {
       })
       .catch(function (err) {
         console.error(err);
+        console.error("Current config: " + JSON.stringify(this.config, null, 2));
         throw err;
       });
   }

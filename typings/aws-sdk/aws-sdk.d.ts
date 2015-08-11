@@ -6,6 +6,7 @@ declare module 'AWS' {
 	}
 
 	class CloudWatch {
+		public constructor (params?:{ region: string });
 		public putMetricAlarm (params:any, cb?:Callback<any>);
 	}
 

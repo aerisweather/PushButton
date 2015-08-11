@@ -7,6 +7,7 @@ import ResourceConfigInterface = require('../../../config/ResourceConfigInterfac
  * @see http://docs.aws.amazon.com/AWSJavaScriptSDK/latest/AWS/CloudWatch.html#putMetricAlarm-property
  */
 interface CloudWatchMetricConfigInterface extends ResourceConfigInterface {
+  region: string;
 
   name: string;
   description: string;
