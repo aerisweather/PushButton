@@ -5,6 +5,6 @@ import ResultInterface = require('../../resource/result/ResultInterface');
 interface RunnerContextInterface extends Wire.Context {
   params:any;
   resources:ResourceInterface[];
-  results:ResultInterface[];
+  results:any;
 }
 export = RunnerContextInterface;

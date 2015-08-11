@@ -58,6 +58,9 @@ class ConfigManager {
   public addResult(name, action, result:ResultInterface) {
     return this.getContext().
       then((context) => {
+        if(context.results[name] === undefined) {
+          context.results[name] = {};
+        }
         return context.results[name][action] = result;
       });
   }

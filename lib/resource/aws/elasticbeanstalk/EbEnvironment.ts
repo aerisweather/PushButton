@@ -71,6 +71,18 @@ class EbEnvironment implements ResourceInterface {
         IncludeDeleted: false
       }).then(result => result.Environments[0]);
     };
+
+		var describeEnvironmentResources = () => {
+			var envName = this.resourceConfig.environmentName;
+			Logger.trace('Getting environment resources for environment ' + envName);
+
+			return this.eb.describeEnvironmentResources({
+				EnvironmentName: envName
+			}).
+				tap((resources) => {
+					Logger.trace(' - Found resources: ' + JSON.stringify(resources, null, 2));
+				})
+		};
     var isReady = (description:any) => {
       const elapsedTime = new Date().getTime() - startTime;
       const elapsedMinutes = (elapsedTime / MINUTE).toFixed(2);
@@ -82,9 +94,14 @@ class EbEnvironment implements ResourceInterface {
     };
 
     return poll<any>(describeEnvironment, SECOND * 10, isReady).
-      timeout(MINUTE * 15).
+      timeout(MINUTE * 30).
       then((envResult) => {
 				this.resultData = envResult;
+				return this;
+			}).
+			then(describeEnvironmentResources).
+			then((resourceResult) => {
+				this.resultData.Resources = resourceResult.EnvironmentResources;
 				return this;
 			});
   }
