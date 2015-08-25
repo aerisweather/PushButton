@@ -5,6 +5,11 @@ declare module 'AWS' {
 		(err:Error, data:TData):void;
 	}
 
+	class CloudWatch {
+		public constructor (params?:{ region: string });
+		public putMetricAlarm (params:any, cb?:Callback<any>);
+	}
+
 	class ElasticBeanstalk {
 		constructor (...params:any[]);
 		createApplication (...params:any[]):any;
@@ -121,6 +126,10 @@ declare module 'AWS' {
 			Policy?: string;
 			ReceiveMessageWaitTimeseconds?: string;
 			VisibilityTimeout?: string;
+		}
+
+		interface Policy {
+			Statement:any;
 		}
 
 		module Params {

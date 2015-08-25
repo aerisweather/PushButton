@@ -19,6 +19,7 @@ import Logger = require('../../../util/Logger');
 class EbEnvironment implements ResourceInterface {
 	protected resourceConfig:EbEnvironmentConfig;
 	protected eb:EbLifted;
+	protected resultData:any;
 
 	constructor (resourceConfig:EbEnvironmentConfig) {
 		this.resourceConfig = resourceConfig;
@@ -46,6 +47,11 @@ class EbEnvironment implements ResourceInterface {
         return this.eb.createEbEnvironment(createConfig);
 			})
 			.then((createEnvironmentResult) => {
+				if(this.resourceConfig.waitUntilReady) {
+					return this.
+						waitUntilReady().
+						then(() => new EbResult('Created elastic beanstalk instance', this.resultData));
+				}
 				return new EbResult();
 			});
 	}
@@ -65,6 +71,18 @@ class EbEnvironment implements ResourceInterface {
         IncludeDeleted: false
       }).then(result => result.Environments[0]);
     };
+
+		var describeEnvironmentResources = () => {
+			var envName = this.resourceConfig.environmentName;
+			Logger.trace('Getting environment resources for environment ' + envName);
+
+			return this.eb.describeEnvironmentResources({
+				EnvironmentName: envName
+			}).
+				tap((resources) => {
+					Logger.trace(' - Found resources: ' + JSON.stringify(resources, null, 2));
+				})
+		};
     var isReady = (description:any) => {
       const elapsedTime = new Date().getTime() - startTime;
       const elapsedMinutes = (elapsedTime / MINUTE).toFixed(2);
@@ -76,8 +94,16 @@ class EbEnvironment implements ResourceInterface {
     };
 
     return poll<any>(describeEnvironment, SECOND * 10, isReady).
-      timeout(MINUTE * 15).
-      then(() => this);
+      timeout(MINUTE * 30).
+      then((envResult) => {
+				this.resultData = envResult;
+				return this;
+			}).
+			then(describeEnvironmentResources).
+			then((resourceResult) => {
+				this.resultData.Resources = resourceResult.EnvironmentResources;
+				return this;
+			});
   }
 
   public getQueue():When.Promise<SqsQueue> {

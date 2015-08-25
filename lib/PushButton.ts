@@ -12,6 +12,7 @@ import PushButtonArg = require('./config/PushButtonArgInterface');
 import ConfigManager = require('./config-manager/ConfigManager');
 import ResourceServiceConfig = require('./config-manager/config/ResourceServiceConfigInterface')
 import resourceMap = require('../config/resource-map');
+import ResultInterface = require('./resource/result/ResultInterface');
 import RunnerContext = require('./config-manager/context/RunnerContextInterface');
 import Cli = require('./util/Cli');
 var readJsonSync = <any>fs.readJsonSync.bind(fs);         //  Fixes bad TS typing in fs.readJsonSync
@@ -125,7 +126,7 @@ class PushButton {
   protected deployResources() {
     this.resourceCollection.setConfig(this.config);
 
-    this.resourceCollection.on('deploy', function (result, resource) {
+    this.resourceCollection.on('deploy', function (result:ResultInterface, resource) {
       console.log(result.message);
     });
 

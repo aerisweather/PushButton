@@ -1,4 +1,5 @@
 ///<reference path="../typings/vendor.d.ts" />
+import CloudWatchMetric = require('../lib/resource/aws/cloudWatch/CloudWatchMetric');
 import S3Object = require('../lib/resource/aws/s3/S3Object');
 import FileProvider = require('../lib/resource/system/file/FileProvider');
 import GitArchiveProvider = require('../lib/resource/system/file/GitArchiveProvider');
@@ -14,6 +15,7 @@ var resourceMap:any = {
   S3Object: S3Object,
   SqsQueue: SqsQueue,
   AppVersion: AppVersion,
-  EbEnvironment: EbEnvironment
+  EbEnvironment: EbEnvironment,
+  CloudWatchMetric: CloudWatchMetric
 };
 export = resourceMap;
