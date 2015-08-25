@@ -128,10 +128,6 @@ declare module 'AWS' {
 			VisibilityTimeout?: string;
 		}
 
-		interface Policy {
-			Statement:any;
-		}
-
 		module Params {
 			interface createQueue {
 				QueueName: string;
