@@ -1,3 +1,7 @@
+# v0.5.0
+
+* ADD: AWS Cloudwatch for alerting
+
 # v0.4.0
 
 * ADD: SqsQueue#setPolicy()
