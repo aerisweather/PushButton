@@ -1,3 +1,7 @@
+# v0.5.1
+
+* MOD: Updated README.md for better display on npm, and added sponsorship.
+
 # v0.5.0
 
 * ADD: AWS Cloudwatch for alerting
