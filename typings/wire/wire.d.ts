@@ -1,6 +1,5 @@
 ///<reference path="../definitely-typed/when/when.d.ts" />
-declare
-function Wire<TSpec, TContext extends Wire.Context>(spec:TSpec):When.Promise<TContext>;
+declare function Wire<TSpec, TContext extends Wire.Context>(spec:TSpec):When.Promise<TContext>;
 
 declare module Wire {
 
