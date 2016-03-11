@@ -2,7 +2,6 @@ node_modules/
 .idea
 
 # Typescript
-typings/definitely-typed/
 lib/**/*.js
 tests/**/*.js
 config/**/*.js
