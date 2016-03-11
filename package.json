@@ -13,7 +13,8 @@
   "scripts": {
     "tsd": "tsd reinstall && tsd rebundle",
     "tsc": "tsc --module commonjs --target es5 $(find lib/ config/ tests/ -name *.ts)",
-    "postinstall": "npm run-script tsc",
+    "build": "npm run tsc",
+    "postinstall": "npm run build",
     "build-tests": "tsc --module commonjs --target es5 $(find tests/ -name *.ts)",
     "test": "npm run build-tests && mocha --recursive ./tests/spec"
   },
