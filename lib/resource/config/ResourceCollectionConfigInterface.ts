@@ -4,5 +4,6 @@ import ResourceServiceConfig = require('../../config-manager/config/ResourceServ
 interface ResourceCollectionConfigInterface {
   params?:any;
   resources:ResourceServiceConfig[];
+  results?: any[];
 }
 export = ResourceCollectionConfigInterface;

@@ -6,7 +6,7 @@ import ResourceServiceConfig = require('./config/ResourceServiceConfigInterface'
 import ResourceCollectionConfig = require('../resource/config/ResourceCollectionConfigInterface');
 import Resource = require('../resource/ResourceInterface');
 import ResultInterface = require('../resource/result/ResultInterface');
-import RunnerContext = require('context/RunnerContextInterface');
+import RunnerContext = require('./context/RunnerContextInterface');
 import tmplPlugin = require('./plugin/tmpl');
 import jsonPlugin = require('./plugin/json');
 
