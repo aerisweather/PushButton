@@ -1,3 +1,7 @@
+# v0.5.2
+
+* FIX: Fix issue caused by `npm postinstall` script, when trying to install tsd typings. 
+
 # v0.5.1
 
 * MOD: Updated README.md for better display on npm, and added sponsorship.
