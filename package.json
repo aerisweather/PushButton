@@ -13,7 +13,7 @@
   "scripts": {
     "tsd": "tsd reinstall && tsd rebundle",
     "tsc": "tsc --module commonjs --target es5 $(find lib/ config/ tests/ -name *.ts)",
-    "postinstall": "npm run-script tsd && npm run-script tsc",
+    "postinstall": "npm run-script tsc",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
